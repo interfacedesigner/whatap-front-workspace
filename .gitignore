@@ -281,3 +281,4 @@ __test__/
 
 # 임시 파일
 tmp
+.worktree
