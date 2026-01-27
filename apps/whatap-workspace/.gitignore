@@ -1,0 +1,36 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+build/
+
+# Storybook
+storybook-static/
+
+# Coverage
+coverage/
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+
+# Env
+.env
+.env.local
+.env.*.local
+
+# Logs
+*.log
+npm-debug.log*
+
+# TypeSafe-i18n generated (optional - can commit if needed)
+# src/fsd/6_shared/i18n/i18n-types.ts
+# src/fsd/6_shared/i18n/i18n-util*.ts
+
+# tanstack router generated
+routeTree.gen.ts
+.tanstack

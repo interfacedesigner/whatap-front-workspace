@@ -1,0 +1,24 @@
+{
+  "extends": "@whatap/configuration/tsconfig.react.json",
+  "compilerOptions": {
+    "outDir": "dist",
+    "types": ["vite-plugin-svgr/client"],
+    "noEmitOnError": false,
+
+    /* Library */
+    "declaration": true,
+    "emitDeclarationOnly": true,
+    "declarationMap": true,
+
+    /* Alias */
+    "baseUrl": "./src",
+    "paths": {
+      "@lib/*": ["lib/*"],
+      "@react/*": ["lib/ReactWrapper/*"],
+      "@assets/*": ["lib/assets/*"]
+    },
+    "typeRoots": ["./node_modules/@types", "./@types"]
+  },
+  "include": ["src"],
+  "exclude": ["node_modules"]
+}

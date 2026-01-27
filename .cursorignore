@@ -1,0 +1,4 @@
+# Korean documentation files - use corresponding .md (English version) instead
+**/*.ko.md
+
+**/*.test.md

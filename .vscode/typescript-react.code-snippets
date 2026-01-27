@@ -1,0 +1,39 @@
+{
+	// Place your whatap-front workspace snippets here. Each snippet is defined under a snippet name and has a scope, prefix, body and 
+	// description. Add comma separated ids of the languages where the snippet is applicable in the scope field. If scope 
+	// is left empty or omitted, the snippet gets applied to all languages. The prefix is what is 
+	// used to trigger the snippet and the body will be expanded and inserted. Possible variables are: 
+	// $1, $2 for tab stops, $0 for the final cursor position, and ${1:label}, ${2:another} for placeholders. 
+	// Placeholders with the same ids are connected.
+	// Example:
+	"tsstyled": {
+		"scope": "typescriptreact",
+		"prefix": "generate-styled",
+		"body": [
+			"import styled from 'styled-components';",
+			"import {propsToStyle, StyleObjProps} from 'utils';",
+			"import { Theme } from 'common-interfaces/WhatapInterface'",
+			"",
+			"interface Props {",
+				"\tstyle?: StyleObjProps",
+				"\ttheme?: Theme",
+			"}",
+			"",
+			"export const FlexCenter = styled.div`",
+				"\tdisplay: -webkit-flex;",
+				"\tdisplay: flex;",
+				"\t-webkit-align-items: center;",
+				"\talign-items: center;",
+				"\t-webkit-justify-content: center;",
+				"\tjustify-content: center;",
+				"\t-webkit-flex-direction: row;",
+				"\t-moz-flex-direction: row;",
+				"\t-ms-flex-direction: row;",
+				"\t-o-flex-direction: row;",
+				"\tflex-direction: row;",
+				"\t${(props: Props) => props.style && propsToStyle(props.style)}",
+			"`;"
+		],
+		"description": "Basic Styled Snippet"
+	}
+}

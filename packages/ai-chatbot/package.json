@@ -1,0 +1,45 @@
+{
+  "name": "@whatap/ai-chatbot",
+  "private": false,
+  "version": "0.0.1",
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "style": "./dist/style.css",
+  "volta": {
+    "extends": "../../package.json"
+  },
+  "engines": {
+    "node": ">=22.19.0"
+  },
+  "exports": {
+    ".": {
+      "import": "./dist/index.js"
+    },
+    "./style.css": "./dist/style.css",
+    "./main.css": "./dist/main.css"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "dev": "pnpm tailwind && vite",
+    "build": "pnpm tailwind && vite build",
+    "preview": "vite preview",
+    "tailwind": "tailwindcss -i ./tailwind.css -o ./src/tailwind.css"
+  },
+  "devDependencies": {
+    "highlight.js": "^9.18.5",
+    "ky": "^1.7.2",
+    "tailwindcss": "^3.4.17",
+    "vite": "catalog:"
+  },
+  "dependencies": {
+    "marked": "^15.0.11",
+    "mermaid": "^11.6.0"
+  },
+  "peerDependencies": {
+    "highlight.js": "^9.18.5",
+    "ky": "^1.7.2"
+  }
+}

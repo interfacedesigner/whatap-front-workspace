@@ -1,0 +1,29 @@
+{
+  "$schema": "https://turbo.build/schema.json",
+  "tasks": {
+    "buildall": {
+      "dependsOn": ["@whatap/ai-chatbot#build", "@whatap/whatap-react-chart#build", "@whatap/ai-sdk#build"],
+      "outputs": ["dist/**"],
+      "cache": false
+    },
+    "build": {
+      "outputs": ["dist/**"],
+      "cache": true
+    },
+    "dev": {
+      "dependsOn": ["@whatap/ai-chatbot#build", "@whatap/whatap-react-chart#build", "@whatap/ai-sdk#build"],
+      "persistent": true,
+      "cache": true
+    },
+    "dev:local": {
+      "dependsOn": ["@whatap/ai-chatbot#build", "@whatap/whatap-react-chart#build", "@whatap/ai-sdk#build"],
+      "persistent": true,
+      "cache": true
+    },
+    "locale": {
+      "outputs": ["apps/whatap-front/src/fsd/common/1_app/adaptors/LocaleAdaptor/data.json"],
+      "cache": false
+    },
+    "type-check": {}
+  }
+}

@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="22" height="22" viewBox="0 0 22 22">
+    <defs>
+        <rect id="a" width="22" height="22" rx="2"/>
+    </defs>
+    <g fill="none" fill-rule="evenodd">
+        <g transform="rotate(90 11 11)">
+            <use fill="none" xlink:href="#a"/>
+            <rect class="icon-rect" width="21" height="21" x=".5" y=".5" stroke="#D9E2EB" rx="2"/>
+        </g>
+        <path stroke="#525B63" d="M8.958 7L13 11.078 8.958 15.12"/>
+    </g>
+</svg>

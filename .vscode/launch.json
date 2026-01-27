@@ -1,0 +1,54 @@
+{
+  // Use IntelliSense to learn about possible attributes.
+  // Hover to view descriptions of existing attributes.
+  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "node",
+      "name": "dev",
+      "request": "launch",
+      "cwd": "${workspaceFolder}",
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": ["run", "dev:ws"],
+      "sourceMaps": true,
+      "resolveSourceMapLocations": ["${workspaceFolder}/**", "!**/node_modules/**"],
+      "console": "integratedTerminal"
+    },
+    {
+      "type": "chrome",
+      "name": "Launch Chrome against localhost",
+      "request": "launch",
+      "url": "http://localhost:9082",
+      "webRoot": "${workspaceFolder}/apps/whatap-front/src",
+      "sourceMaps": true,
+      "sourceMapPathOverrides": {
+        "/@fs/*": "${workspaceFolder}/*",
+        "/*": "${workspaceFolder}/*"
+      },
+      "runtimeExecutable": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+      "userDataDir": "${workspaceFolder}/.vscode/chrome-debug-profile",
+      "timeout": 60000
+    },
+    {
+      "type": "node",
+      "name": "storybook",
+      "request": "launch",
+      "cwd": "${workspaceFolder}",
+      "runtimeExecutable": "npm",
+      "timeout": 50000,
+      "runtimeArgs": ["run", "storybook"],
+      "console": "integratedTerminal",
+      "sourceMaps": true,
+      "resolveSourceMapLocations": ["${workspaceFolder}/**", "!**/node_modules/**"],
+      "skipFiles": ["<node_internals>/**"]
+    }
+  ],
+  "compounds": [
+    {
+      "name": "DEV with Chrome",
+      "configurations": ["dev", "Launch Chrome against localhost"],
+      "stopAll": true
+    }
+  ]
+}

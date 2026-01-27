@@ -1,0 +1,26 @@
+export const colorTheme = {
+  wh: {
+    plotLine: '#e0e0e0',
+    xAxisLine: '#000000',
+    yAxisLine: '#E0E0E0',
+    gridLine: '#d3d3d3',
+    tick: '#000000',
+    unselected: 'rgba(245,245,245,0.5)',
+    background: '#FFFFFF',
+    bottomAxisLine: '#000000',
+    topAxisLine: '#E0E0E0',
+    cardinalityColor: 'rgba(68, 170, 170, 0.3)',
+  },
+  bk: {
+    plotLine: '#5d5d65',
+    xAxisLine: '#C4C4C4',
+    yAxisLine: '#C4C4C4',
+    gridLine: '#4c4c4c',
+    tick: '#ffffff',
+    unselected: 'rgba(245,245,245,0.1)',
+    background: '#262a2f',
+    bottomAxisLine: '#C4C4C4',
+    topAxisLine: '#C4C4C4',
+    cardinalityColor: 'rgba(68, 170, 170, 0.3)',
+  },
+};

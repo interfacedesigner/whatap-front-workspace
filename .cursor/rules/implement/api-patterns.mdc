@@ -1,0 +1,7 @@
+---
+alwaysApply: true
+---
+
+# Apply the API patterns defined in the reference document below.
+
+@.docs/agents/api-patterns.md

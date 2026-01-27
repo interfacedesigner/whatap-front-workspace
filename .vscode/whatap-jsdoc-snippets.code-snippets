@@ -1,0 +1,45 @@
+{
+  "FunctionDesciption": {
+    "prefix": ["jsfn"],
+    "body": [
+      "/**",
+      " * @desc 설명",
+      " * @author <작성자명>",
+      " * @constructor ",
+      " * @param 파라미터 명 - 설명",
+      " * @returns - 설명",
+      " * @todo - 추가 할 일 내용",
+      " * @see - 참조 문서 링크",
+      " * @example - 사용 예시",
+      "**/"
+    ],
+    "description": "함수 js doc 작성 예시."
+  },
+  "ComponentDescription": {
+    "prefix": ["jscomp"],
+    "body": [
+      "/**",
+      " * @desc 설명",
+      " * @author <작성자명>",
+      " * @param 파라미터 명 - 설명",
+      " * @todo - 추가 할 일 내용",
+      " * @see - 참조 문서 링크",
+      "**/"
+    ],
+    "description": "컴포넌트 js doc 작성 예시."
+  },
+  "HookDescription": {
+    "prefix": ["jshook"],
+    "body": [
+      "/**",
+      " * @desc 설명",
+      " * @author <작성자명>",
+      " * @param 파라미터 명 - 설명",
+      " * @returns - 설명",
+      " * @todo - 추가 할 일 내용", 
+      " * @example - 사용 예시",
+      "**/"
+    ],
+    "description": "Hook js doc 작성 예시."
+  }
+}

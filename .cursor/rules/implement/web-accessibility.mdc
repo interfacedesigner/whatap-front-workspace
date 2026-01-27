@@ -1,0 +1,13 @@
+---
+description: Web Accessibility Guidelines - React component development rules for WCAG 2.1 AA compliance
+globs: 
+  -'**/*.tsx' 
+  -'**/*.ts'
+  -'**/*.jsx' 
+  -'**/*.js'
+alwaysApply: false
+---
+
+# Apply the accessibility guidelines defined in the reference document below.
+
+@.docs/agents/web-accessibility.md

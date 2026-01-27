@@ -1,0 +1,11 @@
+{
+  "extends": "@whatap/configuration/tsconfig.react.json",
+  "compilerOptions": {
+    /* Alias */
+    "baseUrl": "src",
+    "paths": {
+      "@/*": ["*"]
+    }
+  },
+  "include": ["src"]
+}

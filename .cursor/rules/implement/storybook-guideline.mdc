@@ -1,0 +1,8 @@
+---
+description: When create a React component, you must create a corresponding Storybook file following these guidelines
+globs: 
+alwaysApply: false
+---
+# When creating React components, apply the Storybook guidelines defined in the reference document below.
+
+@.docs/agents/storybook-guideline.md

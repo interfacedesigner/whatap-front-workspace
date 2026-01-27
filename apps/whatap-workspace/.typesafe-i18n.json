@@ -1,0 +1,10 @@
+{
+  "$schema": "https://unpkg.com/typesafe-i18n/schema/typesafe-i18n.json",
+  "baseLocale": "ko",
+  "locales": ["ko", "en"],
+  "outputPath": "./src/fsd/6_shared/i18n/{locale}",
+  "typesFileName": "i18n-types",
+  "utilFileName": "i18n-util",
+  "formattersTemplateFileName": "formatters",
+  "adapter": "react"
+}

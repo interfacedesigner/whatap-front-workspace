@@ -1,0 +1,9 @@
+{
+	"Print to console": {
+		"scope": "javascript,typescript",
+		"prefix": "storybook-init",
+		"body": [
+		],
+		"description": "Log output to console"
+	}
+}

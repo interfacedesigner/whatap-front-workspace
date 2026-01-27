@@ -1,0 +1,25 @@
+{
+	"StylePropsGenerator": {
+		"prefix": "stpg",
+		"body": [
+			"import styled from 'styled-components';",
+			"import { propsToStyle } from 'utils';",
+			"\n",
+			"export const $COMP_NAME = styled.$DOM_TYPE`",
+			"\n",
+  		"\t${(props: any) => propsToStyle(props.style || {})}",
+			"`;"
+		],
+		"description": "import styled-component with propsToStyle"
+	},
+	"StyledCompGenerator": {
+		"prefix": "stc",
+		"body": [
+			"export const $COMP_NAME = styled.$DOM_TYPE`",
+			"\n",
+  		"\t${(props: any) => propsToStyle(props.style || {})}",
+			"`;"
+		],
+		"description": "import styled-component with propsToStyle"
+	}
+}

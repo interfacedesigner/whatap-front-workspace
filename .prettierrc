@@ -1,0 +1,36 @@
+{
+  "printWidth": 120,
+  "singleQuote": true,
+  "trailingComma": "all",
+  "useTabs": false,
+  "tabWidth": 2,
+  "semi": true,
+  "bracketSpacing": true,
+  "jsxBracketSameLine": false,
+  "jsxSingleQuote": true,
+  "proseWrap": "never",
+  "insertPragma": false,
+  "arrowParens": "always",
+  "overrides": [
+    {
+      "files": ["reducers.js"],
+      "options": {
+        "printWidth": 1200
+      }
+    },
+    {
+      "files": "*.json",
+      "options": {
+        "printWidth": 200
+      }
+    }
+  ],
+  "plugins": ["@trivago/prettier-plugin-sort-imports", "prettier-plugin-curly", "prettier-plugin-merge"],
+  "importOrder": [
+    "<THIRD_PARTY_MODULES>",
+    "^(?!.*(?:[./])\b)(?:@categoryUtils/*|@mql/*|@serviceUtils/*|@serviceHooks/*|@serviceComponents/*|@serviceContext/*|@serviceContainers/*|@serviceConstants/*|@serviceTypes/*|@dashboard/*|@dashboard|@dashboardComponents|@whatap/database|@amplitude|@service/*|@lib/hoc/*|chart-components|components|components/*|containers|containers/*|whatap-rest|whatap-admin-rest|whatap-infra-rest|whatap-apm-rest|whatap-wpm-rest|whatap-cpm-rest|whatap-dbm-rest|whatap-log-rest|whatap-dashboard-rest|whatap-custom-rest|whatap-tanstack-query/*|whatap-utils|whatap-components|whatap-components/*|global-data|live-data|layouts|utils|utils/*|service|service/*|utils_iso|assets|assets/*|common-interfaces*|hoc|context|hook|global-constants|whatap-api|whatap-api/*|styles|actions/*).*$",
+    "^[./]"
+  ],
+  "importOrderSeparation": true,
+  "importOrderSortSpecifiers": true
+}

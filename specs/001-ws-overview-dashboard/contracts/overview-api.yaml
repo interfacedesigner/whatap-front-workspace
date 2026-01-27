@@ -1,0 +1,550 @@
+openapi: 3.0.3
+info:
+  title: Workspace Overview Dashboard API
+  description: |
+    워크스페이스 APM Overview 대시보드를 위한 API 명세.
+    현재 대부분의 API는 Mock 데이터로 구현되어 있으며,
+    실제 API가 준비되면 교체될 예정입니다.
+  version: 1.0.0
+
+servers:
+  - url: /ws/api/v1
+    description: Workspace API Server
+
+paths:
+  /{enterprise}/workspace/{wsid}/overview/health:
+    get:
+      summary: Get Health Summary
+      description: 워크스페이스의 전체 건강 상태 요약 조회
+      operationId: getHealthSummary
+      tags:
+        - Overview
+      parameters:
+        - $ref: '#/components/parameters/enterprise'
+        - $ref: '#/components/parameters/wsid'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthSummaryResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+  /{enterprise}/workspace/{wsid}/overview/agents/summary:
+    get:
+      summary: Get Agent Summary
+      description: 활성/전체 에이전트 수 요약 조회
+      operationId: getAgentSummary
+      tags:
+        - Overview
+      parameters:
+        - $ref: '#/components/parameters/enterprise'
+        - $ref: '#/components/parameters/wsid'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AgentSummaryResponse'
+
+  /{enterprise}/workspace/{wsid}/overview/agents/status:
+    get:
+      summary: Get Agent Status List
+      description: 에이전트별 상세 상태 목록 조회
+      operationId: getAgentStatusList
+      tags:
+        - Overview
+      parameters:
+        - $ref: '#/components/parameters/enterprise'
+        - $ref: '#/components/parameters/wsid'
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 6
+          description: 조회할 에이전트 수
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AgentStatusResponse'
+
+  /{enterprise}/workspace/{wsid}/overview/alerts/summary:
+    get:
+      summary: Get Alert Summary
+      description: 알림 요약 (심각도별 카운트) 조회
+      operationId: getAlertSummary
+      tags:
+        - Overview
+      parameters:
+        - $ref: '#/components/parameters/enterprise'
+        - $ref: '#/components/parameters/wsid'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AlertSummaryResponse'
+
+  /{enterprise}/workspace/{wsid}/overview/performance:
+    get:
+      summary: Get Performance Metrics
+      description: TPS, Error Rate, Avg Response 성능 지표 조회
+      operationId: getPerformanceMetrics
+      tags:
+        - Overview
+      parameters:
+        - $ref: '#/components/parameters/enterprise'
+        - $ref: '#/components/parameters/wsid'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PerformanceMetricsResponse'
+
+  /{enterprise}/workspace/{wsid}/overview/resources:
+    get:
+      summary: Get Resource Usage
+      description: CPU, Memory, 동시 사용자 리소스 사용률 조회
+      operationId: getResourceUsage
+      tags:
+        - Overview
+      parameters:
+        - $ref: '#/components/parameters/enterprise'
+        - $ref: '#/components/parameters/wsid'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResourceUsageResponse'
+
+  /{enterprise}/workspace/{wsid}/overview/timeseries/{chartType}:
+    get:
+      summary: Get Time Series Data
+      description: 시계열 차트 데이터 조회 (TPS, Agent, Error 추이)
+      operationId: getTimeSeriesData
+      tags:
+        - Overview
+      parameters:
+        - $ref: '#/components/parameters/enterprise'
+        - $ref: '#/components/parameters/wsid'
+        - name: chartType
+          in: path
+          required: true
+          schema:
+            type: string
+            enum: [tps, activeAgents, errors]
+        - name: stime
+          in: query
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: 시작 시간 (Unix timestamp)
+        - name: etime
+          in: query
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: 종료 시간 (Unix timestamp)
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TimeSeriesResponse'
+
+  /{enterprise}/workspace/{wsid}/overview/alerts/top:
+    get:
+      summary: Get Top Alerts
+      description: 최근 주요 알림 목록 조회
+      operationId: getTopAlerts
+      tags:
+        - Overview
+      parameters:
+        - $ref: '#/components/parameters/enterprise'
+        - $ref: '#/components/parameters/wsid'
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 5
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TopAlertsResponse'
+
+  /{enterprise}/workspace/{wsid}/overview/services/risk:
+    get:
+      summary: Get Risk Services
+      description: 위험 상태 서비스 목록 조회
+      operationId: getRiskServices
+      tags:
+        - Overview
+      parameters:
+        - $ref: '#/components/parameters/enterprise'
+        - $ref: '#/components/parameters/wsid'
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 5
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RiskServicesResponse'
+
+components:
+  parameters:
+    enterprise:
+      name: enterprise
+      in: path
+      required: true
+      schema:
+        type: string
+      description: Enterprise ID
+    wsid:
+      name: wsid
+      in: path
+      required: true
+      schema:
+        type: integer
+      description: Workspace ID
+
+  schemas:
+    # Health Summary
+    HealthSummaryResponse:
+      type: object
+      required:
+        - status
+        - percentage
+        - label
+      properties:
+        status:
+          type: string
+          enum: [normal, warning, critical]
+        percentage:
+          type: number
+          minimum: 0
+          maximum: 100
+        label:
+          type: string
+          example: "정상"
+
+    # Agent Summary
+    AgentSummaryResponse:
+      type: object
+      required:
+        - activeCount
+        - totalCount
+        - activeRate
+      properties:
+        activeCount:
+          type: integer
+        totalCount:
+          type: integer
+        activeRate:
+          type: number
+
+    # Agent Status List
+    AgentStatusResponse:
+      type: object
+      required:
+        - total
+        - agents
+      properties:
+        total:
+          type: integer
+        agents:
+          type: array
+          items:
+            $ref: '#/components/schemas/AgentStatusItem'
+
+    AgentStatusItem:
+      type: object
+      required:
+        - oid
+        - name
+        - location
+        - load
+        - status
+      properties:
+        oid:
+          type: integer
+        name:
+          type: string
+        location:
+          type: string
+        load:
+          type: number
+          minimum: 0
+          maximum: 100
+        status:
+          type: string
+          enum: [active, warning, inactive]
+
+    # Alert Summary
+    AlertSummaryResponse:
+      type: object
+      required:
+        - criticalCount
+        - warningCount
+        - totalCount
+        - label
+      properties:
+        criticalCount:
+          type: integer
+        warningCount:
+          type: integer
+        totalCount:
+          type: integer
+        label:
+          type: string
+
+    # Performance Metrics
+    PerformanceMetricsResponse:
+      type: object
+      required:
+        - tps
+        - errorRate
+        - avgResponse
+      properties:
+        tps:
+          $ref: '#/components/schemas/MetricValue'
+        errorRate:
+          $ref: '#/components/schemas/MetricValue'
+        avgResponse:
+          $ref: '#/components/schemas/MetricValue'
+
+    MetricValue:
+      type: object
+      required:
+        - value
+        - unit
+        - change
+        - changeType
+      properties:
+        value:
+          type: number
+        unit:
+          type: string
+        change:
+          type: number
+        changeType:
+          type: string
+          enum: [increase, decrease, unchanged]
+
+    # Resource Usage
+    ResourceUsageResponse:
+      type: object
+      required:
+        - cpu
+        - memory
+        - concurrentUsers
+      properties:
+        cpu:
+          $ref: '#/components/schemas/ResourceMetric'
+        memory:
+          $ref: '#/components/schemas/ResourceMetric'
+        concurrentUsers:
+          $ref: '#/components/schemas/ResourceMetric'
+
+    ResourceMetric:
+      type: object
+      required:
+        - value
+        - unit
+        - comparison
+      properties:
+        value:
+          type: number
+        unit:
+          type: string
+        comparison:
+          $ref: '#/components/schemas/ComparisonData'
+
+    ComparisonData:
+      type: object
+      required:
+        - yesterday
+        - lastWeek
+        - lastMonth
+      properties:
+        yesterday:
+          $ref: '#/components/schemas/ChangeValue'
+        lastWeek:
+          $ref: '#/components/schemas/ChangeValue'
+        lastMonth:
+          $ref: '#/components/schemas/ChangeValue'
+
+    ChangeValue:
+      type: object
+      required:
+        - label
+        - change
+        - changeType
+      properties:
+        label:
+          type: string
+        change:
+          type: number
+        changeType:
+          type: string
+          enum: [increase, decrease, unchanged]
+
+    # Time Series
+    TimeSeriesResponse:
+      type: object
+      required:
+        - chartType
+        - data
+        - interval
+      properties:
+        chartType:
+          type: string
+          enum: [tps, activeAgents, errors]
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/TimeSeriesDataPoint'
+        interval:
+          type: integer
+
+    TimeSeriesDataPoint:
+      type: object
+      required:
+        - timestamp
+        - value
+      properties:
+        timestamp:
+          type: integer
+          format: int64
+        value:
+          type: number
+
+    # Top Alerts
+    TopAlertsResponse:
+      type: object
+      required:
+        - total
+        - alerts
+      properties:
+        total:
+          type: integer
+        alerts:
+          type: array
+          items:
+            $ref: '#/components/schemas/AlertItem'
+
+    AlertItem:
+      type: object
+      required:
+        - id
+        - serviceName
+        - message
+        - timestamp
+        - severity
+      properties:
+        id:
+          type: string
+        serviceName:
+          type: string
+        message:
+          type: string
+        timestamp:
+          type: integer
+          format: int64
+        severity:
+          type: string
+          enum: [critical, warning, info]
+
+    # Risk Services
+    RiskServicesResponse:
+      type: object
+      required:
+        - total
+        - services
+      properties:
+        total:
+          type: integer
+        services:
+          type: array
+          items:
+            $ref: '#/components/schemas/RiskServiceItem'
+
+    RiskServiceItem:
+      type: object
+      required:
+        - id
+        - name
+        - reason
+        - currentValue
+        - threshold
+        - severity
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        reason:
+          type: string
+        currentValue:
+          type: number
+        threshold:
+          type: number
+        severity:
+          type: string
+          enum: [critical, warning]
+
+  responses:
+    BadRequest:
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              type:
+                type: string
+                enum: [FAILURE]
+              msg:
+                type: string
+              code:
+                type: integer
+                example: 400
+
+    InternalError:
+      description: Internal Server Error
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              type:
+                type: string
+                enum: [FAILURE]
+              msg:
+                type: string
+              code:
+                type: integer
+                example: 500

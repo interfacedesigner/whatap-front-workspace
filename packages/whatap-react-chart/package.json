@@ -1,0 +1,77 @@
+{
+  "name": "@whatap/whatap-react-chart",
+  "version": "4.1.53",
+  "author": "WhaTap Labs Inc.",
+  "license": "WhaTap",
+  "description": "WhaTap Chart React Wrapper",
+  "scripts": {
+    "dev": "rm -rf dist && vite build --watch & tsc --watch",
+    "build-js": "vite build",
+    "build-ts": "tsc || true",
+    "build": "rm -rf dist && npm run build-js && npm run build-ts",
+    "preview": "vite preview",
+    "storybook": "storybook dev -p 6006",
+    "build-storybook": "storybook build"
+  },
+  "devDependencies": {
+    "@whatap/configuration": "workspace:*",
+    "@storybook/react-vite": "^10.1.11",
+    "@types/lodash-es": "^4.17.7",
+    "@types/react": "catalog:",
+    "@types/react-dom": "catalog:",
+    "@types/styled-components": "^5.1.26",
+    "@types/uuid": "^9.0.1",
+    "@vitejs/plugin-react": "^5.1.2",
+    "dayjs": "^1.11.0",
+    "lodash-es": "^4.0.0",
+    "prop-types": "^15.8.1",
+    "react": "catalog:",
+    "react-intl": "^6.4.1",
+    "storybook": "^10.1.11",
+    "styled-components": "^5.3.10",
+    "typescript": "^5.0.4",
+    "vite": "catalog:",
+    "vite-plugin-svgr": "^4.5.0",
+    "vite-tsconfig-paths": "^5.1.4"
+  },
+  "peerDependencies": {
+    "dayjs": "^1.11.0",
+    "lodash-es": "^4.0.0",
+    "react": "catalog:",
+    "react-dom": "catalog:",
+    "react-intl": "^6.4.1",
+    "styled-components": "^5.0.0"
+  },
+  "dependencies": {
+    "uuid": "^9.0.0"
+  },
+  "files": [
+    "dist"
+  ],
+  "sideEffects": false,
+  "main": "./dist/whatap-react-chart.umd.js",
+  "module": "./dist/whatap-react-chart.mjs",
+  "typings": "./dist/index.d.ts",
+  "volta": {
+    "extends": "../../package.json"
+  },
+  "engines": {
+    "node": ">=22.19.0",
+    "pnpm": ">=8.1.0"
+  },
+  "exports": {
+    ".": {
+      "import": "./dist/whatap-react-chart.mjs",
+      "require": "./dist/whatap-react-chart.umd.js",
+      "typings": "./dist/index.d.ts",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/whatap/whatap-react-chart.git"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com/"
+  }
+}

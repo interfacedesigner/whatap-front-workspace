@@ -1,0 +1,88 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "🚀 Auto Create PR",
+      "type": "shell",
+      "command": "./scripts/smart-pr/auto-pr.sh",
+      "group": "build",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "new",
+        "showReuseMessage": true,
+        "clear": false
+      },
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "🧠 Smart Create PR",
+      "type": "shell",
+      "command": "./scripts/smart-pr/smart-pr.sh",
+      "args": ["${input:baseBranch}"],
+      "group": "build",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "new",
+        "showReuseMessage": true,
+        "clear": false
+      },
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "📝 Commit and Push",
+      "type": "shell",
+      "command": "git",
+      "args": ["add", ".", "&&", "git", "commit", "-m", "${input:commitMessage}", "&&", "git", "push", "-u", "origin", "${input:branchName}"],
+      "group": "build",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "new",
+        "showReuseMessage": true,
+        "clear": false
+      },
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "🔄 Commit, Push & PR",
+      "dependsOrder": "sequence",
+      "dependsOn": ["📝 Commit and Push", "🚀 Auto Create PR"],
+      "group": "build",
+      "problemMatcher": []
+    }
+  ],
+  "inputs": [
+    {
+      "id": "commitMessage",
+      "description": "Enter commit message",
+      "default": "feat: ",
+      "type": "promptString"
+    },
+    {
+      "id": "branchName",
+      "description": "Enter branch name (or press Enter for current branch)",
+      "default": "${command:git.branchName}",
+      "type": "promptString"
+    },
+    {
+      "id": "baseBranch",
+      "description": "Enter base branch for PR",
+      "default": "rc",
+      "type": "promptString"
+    }
+  ]
+}

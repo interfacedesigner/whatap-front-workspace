@@ -1,0 +1,43 @@
+{
+  "name": "@whatap/whatap-workspace",
+  "private": true,
+  "version": "1.0.0",
+  "description": "",
+  "volta": {
+    "node": "22.19.0",
+    "pnpm": "10.20.0"
+  },
+  "engines": {
+    "node": "=22.19.0"
+  },
+  "packageManager": "pnpm@10.20.0+sha512.cf9998222162dd85864d0a8102e7892e7ba4ceadebbf5a31f9c2fce48dfce317a9c53b9f6464d1ef9042cba2e02ae02a9f7c143a2b438cd93c91840f0192b9dd",
+  "scripts": {
+    "prepare": "husky install",
+    "dev": "turbo dev --filter=!@whatap/ai-chatbot --filter=!@whatap/whatap-react-chart",
+    "prettier": "lint-staged"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@trivago/prettier-plugin-sort-imports": "^4.3.0",
+    "@typescript-eslint/eslint-plugin": "^6.7.2",
+    "@typescript-eslint/parser": "^6.7.2",
+    "@typescript-eslint/utils": "^6.7.2",
+    "eslint": "^8.49.0",
+    "eslint-config-prettier": "^9.0.0",
+    "eslint-plugin-prettier": "^5.0.0",
+    "eslint-plugin-react": "^7.33.2",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "eslint-plugin-storybook": "^10.1.11",
+    "eslint-plugin-unused-imports": "^3.2.0",
+    "eslint-webpack-plugin": "3.2.0",
+    "glob": "^11.0.2",
+    "husky": "^8.0.3",
+    "lint-staged": "^15.2.7",
+    "prettier": "^3.4.1",
+    "prettier-plugin-curly": "^0.3.1",
+    "prettier-plugin-merge": "^0.7.1",
+    "turbo": "^2.0.4"
+  }
+}

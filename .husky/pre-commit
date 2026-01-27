@@ -1,0 +1,73 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+# Check for case-only renames (causes issues on macOS/Windows)
+# Detects both explicit renames (R) and add/delete pairs that differ only in case
+check_case_conflicts() {
+  # Method 1: Check explicit renames (R status)
+  git diff --cached --name-status -M | grep -E "^R" | while read status old_path new_path; do
+    old_lower=$(echo "$old_path" | tr '[:upper:]' '[:lower:]')
+    new_lower=$(echo "$new_path" | tr '[:upper:]' '[:lower:]')
+
+    if [ "$old_lower" = "$new_lower" ]; then
+      echo ""
+      echo "⚠️  WARNING: Case-only rename detected!"
+      echo ""
+      echo "   $old_path → $new_path"
+      echo ""
+      echo "This will cause issues on case-insensitive filesystems (macOS, Windows)."
+      echo ""
+      echo "Recommended 2-step rename:"
+      echo "   1. git mv '$old_path' '${old_path}_temp' && git commit -m 'temp rename'"
+      echo "   2. git mv '${old_path}_temp' '$new_path' && git commit -m 'rename to final'"
+      echo ""
+      printf "Do you want to proceed anyway? (y/n): "
+      read -r answer < /dev/tty
+      if [ "$answer" != "y" ] && [ "$answer" != "Y" ]; then
+        echo "Commit cancelled."
+        exit 1
+      fi
+    fi
+  done || exit 1
+
+  # Method 2: Check if added files conflict with existing tracked files (case-insensitive)
+  # Pre-compute tracked files with lowercase mapping (O(n) instead of O(n×m))
+  tracked_files_tmp=$(mktemp)
+  git ls-files | awk '{print $0 "|" tolower($0)}' > "$tracked_files_tmp"
+
+  git diff --cached --name-status | grep -E "^A" | while read status new_path; do
+    new_lower=$(echo "$new_path" | tr '[:upper:]' '[:lower:]')
+
+    # Check against pre-computed tracked files
+    conflict=$(awk -F'|' -v new_lower="$new_lower" -v new_path="$new_path" \
+      '$2 == new_lower && $1 != new_path {print $1; exit}' "$tracked_files_tmp")
+
+    if [ -n "$conflict" ]; then
+      echo ""
+      echo "⚠️  WARNING: Case-conflict with existing file!"
+      echo ""
+      echo "   Adding: $new_path"
+      echo "   Exists: $conflict"
+      echo ""
+      echo "This will cause issues on case-insensitive filesystems (macOS, Windows)."
+      echo ""
+      echo "Recommended 2-step rename:"
+      echo "   1. git mv '$conflict' '${conflict}_temp' && git commit -m 'temp rename'"
+      echo "   2. git mv '${conflict}_temp' '$new_path' && git commit -m 'rename to final'"
+      echo ""
+      printf "Do you want to proceed anyway? (y/n): "
+      read -r answer < /dev/tty
+      if [ "$answer" != "y" ] && [ "$answer" != "Y" ]; then
+        rm -f "$tracked_files_tmp"
+        echo "Commit cancelled."
+        exit 1
+      fi
+    fi
+  done || { rm -f "$tracked_files_tmp"; exit 1; }
+
+  rm -f "$tracked_files_tmp"
+}
+
+check_case_conflicts || exit 1
+
+pnpm prettier

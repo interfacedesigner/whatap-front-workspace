@@ -1,0 +1,74 @@
+{
+  "typescript.tsserver.maxTsServerMemory": 6144,
+  "vsicons.associations.files": [
+    {
+      "icon": "styled-components",
+      "extensions": ["styles.ts"],
+      "format": "png"
+    },
+    {
+      "icon": "types",
+      "extensions": ["d.ts", "type.ts"],
+      "format": "png"
+    },
+    {
+      "icon": "metas",
+      "extensions": ["meta.ts"],
+      "format": "png"
+    },
+    {
+      "icon": "utils",
+      "extensions": ["utils.ts"],
+      "format": "png"
+    },
+    {
+      "icon": "warning",
+      "extensions": ["style.ts", "type.tsx", "util.ts"],
+      "format": "png"
+    },
+    {
+      "icon": "error",
+      "extensions": ["utils.tsx", "util.tsx", "meta.tsx", "styles.tsx", "style.tsx"],
+      "format": "png"
+    },
+    {
+      "icon": "critical_test",
+      "extensions": ["critical.test.ts"],
+      "format": "svg"
+    }
+  ],
+  "files.exclude": {
+    "**/.classpath": true,
+    "**/.project": true,
+    "**/.settings": true,
+    "**/.factorypath": true
+  },
+  "typescript.preferences.importModuleSpecifier": "non-relative",
+  "[javascript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[javascriptreact]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[typescript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "emmet.includeLanguages": {
+    "javascript": "javascriptreact"
+  },
+  "emmet.triggerExpansionOnTab": true,
+  "eslint.enable": true,
+  "eslint.options": { "overrideConfigFile": null },
+  "eslint.validate": ["javascript", "javascriptreact", "html", "typescript", "typescriptreact"],
+  "eslint.workingDirectories": [{ "pattern": "./apps/*/" }, { "pattern": "./packages/*/" }],
+  "editor.tabSize": 2,
+
+  "[xml]": {
+    "editor.defaultFormatter": "redhat.vscode-xml"
+  },
+  "vsicons.customIconFolderPath": "./.vscode",
+  "editor.defaultFormatter": "esbenp.prettier-vscode"
+}

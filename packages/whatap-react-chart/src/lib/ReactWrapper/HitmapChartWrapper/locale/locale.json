@@ -1,0 +1,18 @@
+{
+  "en": {
+    "autoScale": "Y Auto",
+    "error": "Error"
+  },
+  "ko": {
+    "autoScale": "Y축 자동",
+    "error": "에러"
+  },
+  "ja": {
+    "autoScale": "Y軸自動",
+    "error": "エラー"
+  },
+  "zh": {
+    "autoScale": "Y Auto",
+    "error": "Error"
+  }
+}
