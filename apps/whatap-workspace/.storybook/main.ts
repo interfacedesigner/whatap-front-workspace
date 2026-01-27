@@ -1,11 +1,10 @@
 import type { StorybookConfig } from '@storybook/react-vite';
-import path, { dirname } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import path from 'node:path';
 
-const rootPath = path.resolve(import.meta.dirname, '../');
+const rootPath = path.resolve(__dirname, '../');
 
 const config: StorybookConfig = {
-  framework: getAbsolutePath('@storybook/react-vite'),
+  framework: '@storybook/react-vite',
 
   stories: [
     { directory: `${rootPath}/src/fsd/2_pages`, files: '**/*.stories.@(ts|tsx)', titlePrefix: 'Pages' },
@@ -15,7 +14,7 @@ const config: StorybookConfig = {
     { directory: `${rootPath}/src/fsd/6_shared`, files: '**/*.stories.@(ts|tsx)', titlePrefix: 'Shared' },
   ],
 
-  addons: [getAbsolutePath('@storybook/addon-essentials'), getAbsolutePath('@storybook/addon-interactions')],
+  addons: ['@storybook/addon-essentials', '@storybook/experimental-addon-test'],
 
   typescript: {
     reactDocgen: 'react-docgen-typescript',
@@ -36,7 +35,3 @@ const config: StorybookConfig = {
 };
 
 export default config;
-
-function getAbsolutePath(value: string) {
-  return dirname(fileURLToPath(import.meta.resolve(`${value}/package.json`)));
-}
