@@ -7,7 +7,7 @@ import { WsApiError } from './WsApiError';
  */
 export class TimeoutError extends WsApiError {
   constructor(requestId?: string) {
-    super('Request timeout', { requestId });
+    super('Request timeout', { requestId, status: undefined, payload: undefined });
     this.name = 'TimeoutError';
   }
 

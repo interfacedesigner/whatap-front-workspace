@@ -5,7 +5,7 @@ import { WsApiError } from './WsApiError';
  */
 export class AuthError extends WsApiError {
   constructor(message = 'Unauthorized', requestId?: string) {
-    super(message, { status: 401, requestId });
+    super(message, { status: 401, requestId, payload: undefined });
     this.name = 'AuthError';
   }
 

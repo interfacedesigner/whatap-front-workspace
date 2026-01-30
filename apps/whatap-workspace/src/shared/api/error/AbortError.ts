@@ -7,7 +7,7 @@ import { WsApiError } from './WsApiError';
  */
 export class AbortError extends WsApiError {
   constructor(requestId?: string) {
-    super('Request aborted', { requestId });
+    super('Request aborted', { requestId, status: undefined, payload: undefined });
     this.name = 'AbortError';
   }
 

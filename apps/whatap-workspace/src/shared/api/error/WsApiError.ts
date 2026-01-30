@@ -3,11 +3,11 @@
  */
 export interface WsApiErrorOptions {
   /** HTTP 상태 코드 */
-  status?: number;
+  status: number | undefined;
   /** 응답 페이로드 */
-  payload?: unknown;
+  payload: unknown | undefined;
   /** 요청 식별자 */
-  requestId?: string;
+  requestId: string | undefined;
 }
 
 /**
@@ -16,9 +16,9 @@ export interface WsApiErrorOptions {
  * 모든 API 관련 에러의 기본 클래스입니다.
  */
 export class WsApiError extends Error {
-  public readonly status?: number;
-  public readonly payload?: unknown;
-  public readonly requestId?: string;
+  public readonly status: number | undefined;
+  public readonly payload: unknown | undefined;
+  public readonly requestId: string | undefined;
 
   constructor(message: string, options?: WsApiErrorOptions) {
     super(message);
