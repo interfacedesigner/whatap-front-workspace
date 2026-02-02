@@ -1,5 +1,3 @@
-'use client';
-
 import { Label } from '@/shared/components/ui/label';
 import { Separator } from '@/shared/components/ui/separator';
 import { cn } from '@/shared/lib/utils';

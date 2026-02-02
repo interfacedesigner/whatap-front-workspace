@@ -9,7 +9,7 @@ export class NetworkError extends WsApiError {
   public readonly originalError: Error;
 
   constructor(originalError: Error, requestId?: string) {
-    super('Network error', { requestId });
+    super('Network error', { requestId, status: undefined, payload: undefined });
     this.name = 'NetworkError';
     this.originalError = originalError;
   }

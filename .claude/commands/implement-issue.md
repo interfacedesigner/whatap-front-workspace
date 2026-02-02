@@ -1,10 +1,42 @@
 ---
 description: Issue 번호를 받아 Ralph Loop으로 구현하고 PR을 생성합니다
-allowed-tools: Bash(*), Read(*), Write(*), Edit(*), Glob(*), Grep(*), Task(*), Skill(*)
+allowed-tools: >-
+  Bash(
+    git status, git add *, git commit *, git push *, git stash *, git log *, git diff *, git worktree *,
+    gh issue view *, gh pr create *,
+    pnpm install, pnpm test *, pnpm typecheck, pnpm lint, pnpm build, pnpm dev, pnpm storybook,
+    cd .worktree/*, ls *, pwd
+  ),
+  Read(*),
+  Write(.worktree/**),
+  Edit(.worktree/**),
+  Glob(*),
+  Grep(*),
+  Task(*),
+  Skill(ralph-loop:*)
 argument-hint: [issue 번호]
 ---
 
 # Issue 구현 및 PR 생성 (Ralph Loop)
+
+## 보안 설정
+
+이 명령어는 다음 권한 제한이 적용됩니다:
+
+| 도구 | 허용 범위 |
+|------|----------|
+| **Bash** | git, gh, pnpm 명령만 허용 |
+| **Write/Edit** | `.worktree/**` 경로만 수정 가능 |
+| **Read/Glob/Grep** | 전체 읽기 허용 (분석용) |
+| **Skill** | `ralph-loop:*` 만 허용 |
+
+**차단되는 작업:**
+- `.env`, credentials 등 민감 파일 수정
+- 시스템 명령 (`rm`, `curl | bash` 등)
+- main 브랜치 직접 수정
+- `git push --force`, `git reset --hard`
+
+---
 
 ## Issue 번호
 $ARGUMENTS

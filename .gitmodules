@@ -1,0 +1,3 @@
+[submodule "do-not-touch-legacy"]
+	path = do-not-touch-legacy
+	url = git@github.com:whatap/whatap-front.git

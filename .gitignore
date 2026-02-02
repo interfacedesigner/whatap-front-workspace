@@ -281,3 +281,9 @@ __test__/
 
 # 임시 파일
 tmp
+.worktree
+
+# Playwright
+**/e2e/playwright-report/
+**/e2e/test-results/
+**/playwright/.cache/
