@@ -1,23 +1,24 @@
 <!--
 Sync Impact Report
 ==================
-Version change: N/A → 1.0.0
-Added sections: All (initial creation)
+Version change: 1.0.0 → 1.1.0
+Modified principles:
+  - Principle 1: FSD Architecture Compliance (added page-code-reviewer agent rule)
+Added sections: None
 Removed sections: None
-Modified principles: None (initial)
 Templates requiring updates:
-  - ⚠ pending: .specify/templates/plan-template.md (to be created)
-  - ⚠ pending: .specify/templates/spec-template.md (to be created)
-  - ⚠ pending: .specify/templates/tasks-template.md (to be created)
+  - ✅ updated: .specify/templates/tasks-template.md (page-code-reviewer step added)
+  - ✅ updated: .specify/templates/plan-template.md (Constitution Check reference)
+  - N/A: .specify/templates/spec-template.md (no changes needed)
 Follow-up TODOs: None
 -->
 
 # Project Constitution
 
 **Project Name:** whatap-workspace
-**Version:** 1.0.0
+**Version:** 1.1.0
 **Ratification Date:** 2026-02-02
-**Last Amended Date:** 2026-02-02
+**Last Amended Date:** 2026-02-03
 
 ## Purpose
 
@@ -37,8 +38,9 @@ This constitution defines the non-negotiable principles and governance rules for
   - Cross-imports within the same layer are FORBIDDEN
 - Public API exports MUST be used when importing from other slices (`index.ts`)
 - Direct relative paths are ALLOWED only within the same slice
+- **After implementing page-related tasks, the `page-code-reviewer` agent MUST be executed to validate FSD compliance**
 
-**Rationale:** Consistent architecture ensures maintainability, predictable dependency flow, and clear separation of concerns across the codebase.
+**Rationale:** Consistent architecture ensures maintainability, predictable dependency flow, and clear separation of concerns across the codebase. Automated review via `page-code-reviewer` agent catches FSD violations early and enables auto-correction.
 
 ### Principle 2: Type Safety
 
@@ -91,6 +93,10 @@ This constitution defines the non-negotiable principles and governance rules for
 - Violations MUST be flagged and resolved before merge
 
 ## Changelog
+
+### v1.1.0 (2026-02-03)
+- Added `page-code-reviewer` agent execution requirement to Principle 1 (FSD Architecture Compliance)
+- Page-related task implementations now require automated FSD validation
 
 ### v1.0.0 (2026-02-02)
 - Initial constitution ratification

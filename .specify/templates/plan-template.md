@@ -33,6 +33,24 @@
 
 [Gates determined based on constitution file]
 
+### FSD Architecture Compliance
+
+- [ ] Layer dependencies follow: `app` → `pages` → `widgets` → `features` → `entities` → `shared`
+- [ ] Public API exports used for cross-slice imports
+- [ ] **Page tasks require `page-code-reviewer` agent execution after implementation**
+
+### Type Safety
+
+- [ ] TypeScript `strict: true` enabled
+- [ ] Zod schemas defined for API boundaries
+- [ ] No untyped `any` usage without justification
+
+### Test Coverage
+
+- [ ] Storybook files for UI components
+- [ ] Unit tests for utilities
+- [ ] E2E tests for new pages
+
 ## Project Structure
 
 ### Documentation (this feature)

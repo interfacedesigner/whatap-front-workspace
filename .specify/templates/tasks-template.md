@@ -146,6 +146,20 @@ Examples of foundational tasks (adjust based on your project):
 
 ---
 
+## Phase N-1: FSD Validation (Page Tasks)
+
+**Purpose**: Validate FSD architecture compliance for page-related tasks
+
+> **CONSTITUTION REQUIREMENT**: After implementing page-related tasks, the `page-code-reviewer` agent MUST be executed to validate FSD compliance.
+
+- [ ] TXXX Run `page-code-reviewer` agent on all modified page files
+- [ ] TXXX Fix any FSD violations detected (auto-fix or manual)
+- [ ] TXXX Verify typecheck passes after FSD fixes
+
+**Trigger**: Execute this phase after completing any user story that includes page file modifications.
+
+---
+
 ## Phase N: Polish & Cross-Cutting Concerns
 
 **Purpose**: Improvements that affect multiple user stories

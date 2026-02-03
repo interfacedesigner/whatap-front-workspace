@@ -126,6 +126,66 @@ pages/
 - `route.tsx`: 레이아웃 정의
 - `index.tsx`: 인덱스 페이지
 
+### Page vs Widget 구분
+
+**Route 파일 = Page 컴포넌트**입니다. 페이지 로직은 route 파일에 직접 작성합니다.
+
+```typescript
+// ✅ 올바른 구조: route 파일에 페이지 로직 작성
+// pages/_authenticated/ws/$wsid/_workspace/server/inventory-map.tsx
+export const Route = createFileRoute('...')({
+  component: ServerInventoryMapPage,
+});
+
+function ServerInventoryMapPage() {
+  const servers = useSuspenseQuery(...);
+
+  return (
+    <div>
+      <h1>Server Inventory Map</h1>
+      <ServerToolbar />        {/* widget */}
+      <ServerGrid data={...} /> {/* widget */}
+    </div>
+  );
+}
+```
+
+```typescript
+// ❌ 잘못된 구조: route가 widget을 단순 감싸기만 함
+// pages/.../inventory-map.tsx
+function ServerInventoryMapRoute() {
+  return <ServerInventoryMapPage />;  // widget이 페이지 역할
+}
+```
+
+**Widget의 역할:**
+- 페이지 내부의 **재사용 가능한 복합 UI 블록**
+- 여러 페이지에서 공유되거나, 페이지를 논리적 단위로 분해할 때 사용
+- 예: `ServerGrid`, `ProjectSummaryPanel`, `ServerGroupToolbar`
+
+**Page의 역할:**
+- 데이터 fetching 및 에러/로딩 처리 (Suspense boundary)
+- 페이지 레이아웃 구성
+- Widget 조합 및 상태 전달
+
+### Page 코드 리뷰 (필수)
+
+Page 또는 Route 파일 구현 후에는 **반드시 `page-code-reviewer` 에이전트를 실행**하여 FSD 아키텍처 준수 여부를 검증하고 자동 수정합니다.
+
+```bash
+# 변경된 page 파일 리뷰 (git diff 기반)
+Task(subagent_type: "page-code-reviewer")
+
+# 특정 파일/폴더 리뷰
+Task(subagent_type: "page-code-reviewer", prompt: "pages/_authenticated/ws/$wsid/_workspace/server/")
+```
+
+**검증 항목:**
+- Page가 Widget을 단순 감싸기만 하는지 (Critical)
+- FSD 계층 위반 여부 (High)
+- Public API(index.ts) 사용 여부 (High)
+- Store 위치 적절성 (Medium)
+
 ## Styling (Tailwind + shadcn)
 
 ### 컴포넌트 사용
