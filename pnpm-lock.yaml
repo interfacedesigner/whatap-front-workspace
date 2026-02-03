@@ -110,6 +110,9 @@ importers:
       '@tanstack/react-virtual':
         specifier: ^3.13.18
         version: 3.13.18(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
+      '@whatap/visualization':
+        specifier: ^1.1.0
+        version: 1.1.0(@whatap/whatap-themes@0.0.6)(dayjs@1.11.19)
       class-variance-authority:
         specifier: ^0.7.1
         version: 0.7.1
@@ -128,6 +131,9 @@ importers:
       input-otp:
         specifier: ^1.4.2
         version: 1.4.2(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
+      jotai:
+        specifier: ^2.17.0
+        version: 2.17.0(@babel/core@7.28.6)(@babel/template@7.28.6)(@types/react@19.2.9)(react@19.2.4)
       lucide-react:
         specifier: ^0.563.0
         version: 0.563.0(react@19.2.4)
@@ -176,6 +182,9 @@ importers:
       vaul:
         specifier: ^1.1.2
         version: 1.1.2(@types/react-dom@19.2.3(@types/react@19.2.9))(@types/react@19.2.9)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
+      zod:
+        specifier: ^4.3.6
+        version: 4.3.6
     devDependencies:
       '@eslint/js':
         specifier: ^9.0.0
@@ -3236,6 +3245,17 @@ packages:
   '@webassemblyjs/wast-printer@1.14.1':
     resolution: {integrity: sha512-kPSSXE6De1XOR820C90RIo2ogvZG+c3KiHzqUoO/F34Y2shGzesfqv7o57xrxovZJH/MetF5UjroJ/R/3isoiw==}
 
+  '@whatap/visualization@1.1.0':
+    resolution: {integrity: sha512-E6z7wGyydD+ACcVmnG6MYZW2KM6y6221WYhLj+UCugx/oxQLSnTu3yeb4j7Iio4xrNHxZCma5AeAsFnvxIbYlg==, tarball: https://npm.pkg.github.com/download/@whatap/visualization/1.1.0/21f383740f9d997efb05dfd71e1b56880866d190}
+    engines: {node: '>=22.19.0'}
+    peerDependencies:
+      '@whatap/whatap-themes': ^0.0.6
+      dayjs: ^1.11.11
+
+  '@whatap/whatap-themes@0.0.6':
+    resolution: {integrity: sha512-mM6zSeA/RhgRYaOTr7nJKuyZljsnR2ja/kZdSEBFtFRloJG/7NWDt2qC+zmQAcVlPTAC6TrTNA5jpgxTo3fzRQ==, tarball: https://npm.pkg.github.com/download/@whatap/whatap-themes/0.0.6/42a3546509af014063d927d4ad4e391e6c3e2671}
+    engines: {node: '>=20.x', pnpm: '>=8.x'}
+
   '@xtuc/ieee754@1.2.0':
     resolution: {integrity: sha512-DX8nKgqcGwsc0eJSqYt5lwP4DH5FlHnmuWWBRy7X0NcaGR0ZtuyeESgMwTYVEtxmsNGY+qit4QYT/MIYTOTPeA==}
 
@@ -5016,6 +5036,24 @@ packages:
 
   jose@6.1.3:
     resolution: {integrity: sha512-0TpaTfihd4QMNwrz/ob2Bp7X04yuxJkjRGi4aKmOqwhov54i6u79oCv7T+C7lo70MKH6BesI3vscD1yb/yzKXQ==}
+
+  jotai@2.17.0:
+    resolution: {integrity: sha512-DBPT7Vx7E7R/ZJL7Uq7yUA9+LLR0IRiRM+Bw5ugVwv8L8++RjlXVXZ2//ccucypc5lcyuHOW09rYcW77RurduQ==}
+    engines: {node: '>=12.20.0'}
+    peerDependencies:
+      '@babel/core': '>=7.0.0'
+      '@babel/template': '>=7.0.0'
+      '@types/react': '>=17.0.0'
+      react: '>=17.0.0'
+    peerDependenciesMeta:
+      '@babel/core':
+        optional: true
+      '@babel/template':
+        optional: true
+      '@types/react':
+        optional: true
+      react:
+        optional: true
 
   js-tokens@4.0.0:
     resolution: {integrity: sha512-RdJUflcE3cUzKiMqQgsCu06FPu9UdIJO0beYbPhHN4k6apgJtifcoCtT9bcxOpYBtpD2kCM6Sbzg4CausW/PKQ==}
@@ -7037,6 +7075,9 @@ packages:
 
   zod@3.25.76:
     resolution: {integrity: sha512-gzUt/qt81nXsFGKIFcC3YnfEAx5NkunCfnDlvuBSSFS02bcXu4Lmea0AFIUwbLWxWPx3d9p8S5QoaujKcNQxcQ==}
+
+  zod@4.3.6:
+    resolution: {integrity: sha512-rftlrkhHZOcjDwkGlnUtZZkvaPHCsDATp4pGpuOOMDaTdDDXF91wuVDJoWoPsKX/3YPQ5fHuF3STjcYyKr+Qhg==}
 
 snapshots:
 
@@ -10163,6 +10204,13 @@ snapshots:
       '@webassemblyjs/ast': 1.14.1
       '@xtuc/long': 4.2.2
 
+  '@whatap/visualization@1.1.0(@whatap/whatap-themes@0.0.6)(dayjs@1.11.19)':
+    dependencies:
+      '@whatap/whatap-themes': 0.0.6
+      dayjs: 1.11.19
+
+  '@whatap/whatap-themes@0.0.6': {}
+
   '@xtuc/ieee754@1.2.0': {}
 
   '@xtuc/long@4.2.2': {}
@@ -12122,6 +12170,13 @@ snapshots:
   jju@1.4.0: {}
 
   jose@6.1.3: {}
+
+  jotai@2.17.0(@babel/core@7.28.6)(@babel/template@7.28.6)(@types/react@19.2.9)(react@19.2.4):
+    optionalDependencies:
+      '@babel/core': 7.28.6
+      '@babel/template': 7.28.6
+      '@types/react': 19.2.9
+      react: 19.2.4
 
   js-tokens@4.0.0: {}
 
@@ -14489,3 +14544,5 @@ snapshots:
       zod: 3.25.76
 
   zod@3.25.76: {}
+
+  zod@4.3.6: {}

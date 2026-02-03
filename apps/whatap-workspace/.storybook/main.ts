@@ -7,11 +7,11 @@ const config: StorybookConfig = {
   framework: '@storybook/react-vite',
 
   stories: [
-    { directory: `${rootPath}/src/fsd/2_pages`, files: '**/*.stories.@(ts|tsx)', titlePrefix: 'Pages' },
-    { directory: `${rootPath}/src/fsd/3_widgets`, files: '**/*.stories.@(ts|tsx)', titlePrefix: 'Widgets' },
-    { directory: `${rootPath}/src/fsd/4_features`, files: '**/*.stories.@(ts|tsx)', titlePrefix: 'Features' },
-    { directory: `${rootPath}/src/fsd/5_entities`, files: '**/*.stories.@(ts|tsx)', titlePrefix: 'Entities' },
-    { directory: `${rootPath}/src/fsd/6_shared`, files: '**/*.stories.@(ts|tsx)', titlePrefix: 'Shared' },
+    { directory: `${rootPath}/src/pages`, files: '**/*.stories.@(ts|tsx)', titlePrefix: 'Pages' },
+    { directory: `${rootPath}/src/widgets`, files: '**/*.stories.@(ts|tsx)', titlePrefix: 'Widgets' },
+    { directory: `${rootPath}/src/features`, files: '**/*.stories.@(ts|tsx)', titlePrefix: 'Features' },
+    { directory: `${rootPath}/src/entities`, files: '**/*.stories.@(ts|tsx)', titlePrefix: 'Entities' },
+    { directory: `${rootPath}/src/shared`, files: '**/*.stories.@(ts|tsx)', titlePrefix: 'Shared' },
   ],
 
   addons: ['@storybook/addon-essentials', '@storybook/experimental-addon-test'],
