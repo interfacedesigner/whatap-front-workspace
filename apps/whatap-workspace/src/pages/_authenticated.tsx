@@ -3,12 +3,13 @@ import { Outlet, createFileRoute, redirect } from '@tanstack/react-router';
 
 export const Route = createFileRoute('/_authenticated')({
   beforeLoad: async ({ context, location }) => {
-    if (!context.auth.isAuthenticated) {
-      throw redirect({
-        to: '/login',
-        search: { redirect: location.href },
-      });
-    }
+    // TODO: 임시 주석처리 - 인증 체크 비활성화 (개발용)
+    // if (!context.auth.isAuthenticated) {
+    //   throw redirect({
+    //     to: '/login',
+    //     search: { redirect: location.href },
+    //   });
+    // }
   },
   component: AuthenticatedLayoutRoute,
 });

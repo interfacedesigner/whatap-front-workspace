@@ -1,6 +1,6 @@
 /**
  * Server Inventory Map Page
- * @route /ws/:wsid/server/inventory-map
+ * @route /ent/:eid/ws/:wsid/server/inventory-map
  */
 import { ProjectSummaryPanel, useProjectSummaryMockData, useServerMockData } from '@/entities/server';
 import {
@@ -12,7 +12,7 @@ import {
 import { createFileRoute } from '@tanstack/react-router';
 import { useAtomValue } from 'jotai';
 
-export const Route = createFileRoute('/_authenticated/ws/$wsid/_workspace/server/inventory-map')({
+export const Route = createFileRoute('/_authenticated/ent/$eid/ws/$wsid/_workspace/server/inventory-map')({
   component: ServerInventoryMapPage,
 });
 
