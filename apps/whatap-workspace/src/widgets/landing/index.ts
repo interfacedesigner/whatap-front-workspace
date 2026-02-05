@@ -1,0 +1,9 @@
+export { Header } from './header';
+export { HeroSection } from './hero-section';
+export { ProblemSection } from './problem-section';
+export { CorePrinciplesSection } from './core-principles-section';
+export { HowItWorksSection } from './how-it-works-section';
+export { MVPFeaturesSection, MVPFeaturesSection as MvpFeaturesSection } from './mvp-features-section';
+export { CTASection, CTASection as CtaSection } from './cta-section';
+export { Footer } from './footer';
+export { DashboardMock } from './dashboard-mock';
