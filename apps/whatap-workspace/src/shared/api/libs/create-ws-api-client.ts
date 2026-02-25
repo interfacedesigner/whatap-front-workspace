@@ -1,14 +1,14 @@
 import createClient, { type Client } from 'openapi-fetch';
 
 import type { paths } from '../generated/api.d.ts';
-import type { WsApiClientOptions } from '../types';
 import {
   createAuthMiddleware,
-  createRetryableFetch,
   createErrorTransformMiddleware,
   createHeadersMiddleware,
   createLoggerMiddleware,
+  createRetryableFetch,
 } from '../middlewares';
+import type { WsApiClientOptions } from '../types';
 
 /**
  * 기본 클라이언트 옵션
@@ -58,7 +58,7 @@ export function createWsApiClient(options?: WsApiClientOptions): Client<paths> {
 
   // 클라이언트 생성
   const client = createClient<paths>({
-    baseUrl: config.baseUrl,
+    baseUrl: config.baseUrl ?? '',
     fetch: fetchWithRetry,
   });
 

@@ -1,5 +1,5 @@
 import { Button } from '@/shared/components/ui/button';
-import { CheckCircle } from 'lucide-react';
+import { Check } from 'lucide-react';
 
 interface SuccessViewProps {
   onCreateWorkspace: () => void;
@@ -15,18 +15,21 @@ export function SuccessView({
   subtitle = 'Your monitoring is now active. You can start managing your infrastructure from the dashboard.',
 }: SuccessViewProps) {
   return (
-    <div className='flex flex-col items-center gap-6 text-center max-w-md'>
-      <div className='w-16 h-16 rounded-full border-2 border-[#296cf2] flex items-center justify-center'>
-        <CheckCircle className='w-10 h-10 text-[#296cf2]' />
+    <div className='flex flex-col items-center gap-6 text-center w-full'>
+      {/* Figma: solid navy blue circle (#1E3A8A, 48x48) with white check icon (24x24) */}
+      <div className='w-12 h-12 rounded-full bg-[#1E3A8A] flex items-center justify-center'>
+        <Check className='w-6 h-6 text-white' strokeWidth={2.5} />
       </div>
 
-      <div className='flex flex-col gap-2'>
-        <h1 className='text-2xl font-bold text-[#222]'>Account has been created successfully.</h1>
-        <p className='text-sm text-[#757575]'>{subtitle}</p>
+      {/* Heading & description */}
+      <div className='flex flex-col gap-3'>
+        <h1 className='text-2xl font-semibold text-[#222]'>Account has been created successfully.</h1>
+        <p className='text-base text-[#757575] leading-relaxed'>{subtitle}</p>
       </div>
 
+      {/* CTA Button */}
       <Button
-        className='bg-[#296cf2] hover:bg-[#1e5ad9] text-white text-sm h-10 px-6 rounded w-full'
+        className='bg-[#1E3A8A] hover:bg-[#1E3A8A]/90 text-white text-sm h-10 rounded-lg w-full'
         onClick={onCreateWorkspace}
       >
         {ctaText}

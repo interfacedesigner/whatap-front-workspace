@@ -51,7 +51,7 @@ export function SelectRowColumn<TData extends object>({
               onChange: table.getToggleAllRowsSelectedHandler(),
               defaultRenderHeader: ({ className }) => (
                 <DefaultRenderHeader
-                  className={className}
+                  {...(className != null && { className })}
                   isSomeRowsSelected={table.getIsSomeRowsSelected()}
                   isAllRowsSelected={table.getIsAllRowsSelected()}
                   onChange={table.getToggleAllRowsSelectedHandler()}
@@ -74,7 +74,7 @@ export function SelectRowColumn<TData extends object>({
               rowData: row.original,
               defaultRenderCell: ({ className }) => (
                 <DefaultRenderCell
-                  className={className}
+                  {...(className != null && { className })}
                   isSelected={row.getIsSelected()}
                   onChange={row.getToggleSelectedHandler()}
                   disabled={!row.getCanSelect()}

@@ -1,6 +1,6 @@
 import type { Middleware } from 'openapi-fetch';
 
-import { WsApiError, NetworkError, AbortError, TimeoutError } from '../error';
+import { AbortError, NetworkError, TimeoutError, WsApiError } from '../error';
 
 /**
  * 백엔드 에러 응답 포맷 (유연하게 설계)
@@ -99,7 +99,11 @@ export function createErrorTransformMiddleware(): Middleware {
       }
 
       // 기타 에러
-      return new WsApiError(error instanceof Error ? error.message : String(error), { requestId: id });
+      return new WsApiError(error instanceof Error ? error.message : String(error), {
+        status: undefined,
+        payload: undefined,
+        requestId: id,
+      });
     },
   };
 }

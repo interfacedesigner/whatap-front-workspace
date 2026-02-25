@@ -34,12 +34,12 @@ function randomIp() {
 
 function randomName(idx: number) {
   const names = ['Alpha', 'Beta', 'Gamma', 'Delta', 'Epsilon', 'Zeta', 'Eta', 'Theta', 'Iota', 'Kappa'];
-  return `Server ${names[idx % names.length]} #${idx + 1}`;
+  return `Server ${names[idx % names.length] ?? 'Unknown'} #${idx + 1}`;
 }
 
 function randomStatus() {
   const statuses = ['Online', 'Offline', 'Warning', 'Critical', 'Maintenance'];
-  return statuses[Math.floor(Math.random() * statuses.length)];
+  return statuses[Math.floor(Math.random() * statuses.length)] ?? 'Online';
 }
 
 function randomTimestamp() {

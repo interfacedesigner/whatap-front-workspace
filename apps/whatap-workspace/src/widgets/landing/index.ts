@@ -7,3 +7,4 @@ export { MVPFeaturesSection, MVPFeaturesSection as MvpFeaturesSection } from './
 export { CTASection, CTASection as CtaSection } from './cta-section';
 export { Footer } from './footer';
 export { DashboardMock } from './dashboard-mock';
+export { AbstractObjects, HeroAbstractBackground } from './abstract-objects';

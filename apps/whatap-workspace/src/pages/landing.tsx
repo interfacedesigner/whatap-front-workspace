@@ -16,7 +16,7 @@ export const Route = createFileRoute('/landing')({
 
 function LandingPage() {
   return (
-    <div className='min-h-screen bg-white'>
+    <div className='min-h-screen bg-[#1a1a2e]'>
       <Header />
       <main>
         <HeroSection />

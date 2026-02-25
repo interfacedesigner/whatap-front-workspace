@@ -78,10 +78,8 @@ export const DEFAULT_RETRY_OPTIONS: Required<RetryOptions> = {
 /**
  * 인증 설정 기본값
  */
-export const DEFAULT_AUTH_OPTIONS: Required<Omit<AuthOptions, 'refreshToken' | 'setToken'>> & Pick<AuthOptions, 'refreshToken' | 'setToken'> = {
+export const DEFAULT_AUTH_OPTIONS: Required<Omit<AuthOptions, 'refreshToken' | 'setToken'>> = {
   tokenKey: 'auth_token',
   getToken: () => localStorage.getItem('auth_token'),
   headerFormat: 'Bearer {token}',
-  refreshToken: undefined,
-  setToken: undefined,
 };

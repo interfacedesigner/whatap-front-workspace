@@ -2,7 +2,7 @@ import { cn } from '@/shared/lib/utils';
 import type { HeaderGroup, SortDirection } from '@tanstack/react-table';
 import { flexRender } from '@tanstack/react-table';
 import { ArrowDown, ArrowUp } from 'lucide-react';
-import { memo } from 'react';
+import React, { memo } from 'react';
 
 import { sanitizeCssVarToken } from '../utils/css-variables';
 
@@ -30,7 +30,7 @@ export const MemoizedDataTableHeaderRow = memo(
   (prev, next) => {
     return prev.tableStateForRerenderOnly.every((state, index) => state === next.tableStateForRerenderOnly[index]);
   },
-) as <TData extends object>(props: MemoizedDataTableHeaderRowProps<TData>) => JSX.Element;
+) as <TData extends object>(props: MemoizedDataTableHeaderRowProps<TData>) => React.JSX.Element;
 
 function DataTableHeaderRow<TData extends object>({
   headerGroup,

@@ -28,7 +28,9 @@ function SuccessPage() {
 
   return (
     <div className='min-h-screen flex items-center justify-center bg-[rgba(215,226,255,0.15)] px-4'>
-      <SuccessView onCreateWorkspace={handleAction} ctaText={ctaText} subtitle={subtitle} />
+      <div className='w-full max-w-[480px] bg-white rounded-lg shadow-lg p-10'>
+        <SuccessView onCreateWorkspace={handleAction} ctaText={ctaText} subtitle={subtitle} />
+      </div>
     </div>
   );
 }

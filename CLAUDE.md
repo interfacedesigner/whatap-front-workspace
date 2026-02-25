@@ -1,1 +1,2 @@
 - @AGENTS.md
+- @apps/whatap-workspace/CLAUDE.md

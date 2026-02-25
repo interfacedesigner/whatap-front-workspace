@@ -38,8 +38,8 @@ const INDUSTRIES = [
 ];
 
 const INFRA_SIZES = [
-  { value: '1-50', label: '1–50 servers', desc: 'Small team or startup' },
-  { value: '51-200', label: '51–200 servers', desc: 'Growing organization' },
+  { value: '1-50', label: '1\u201350 servers', desc: 'Small team or startup' },
+  { value: '51-200', label: '51\u2013200 servers', desc: 'Growing organization' },
   { value: '201+', label: '201+ servers', desc: 'Enterprise scale' },
 ];
 
@@ -96,15 +96,16 @@ export function LeadInfoForm({ onContinue, onSkip, initialData }: LeadInfoFormPr
   };
 
   return (
-    <div className='w-full max-w-md flex flex-col gap-6'>
-      <div className='text-center'>
-        <h1 className='text-2xl font-bold text-[#222]'>Tell us about your organization</h1>
-        <p className='text-sm text-[#757575] mt-1'>Help us personalize your experience and provide better support</p>
+    <div className='w-full flex flex-col gap-6'>
+      {/* Header */}
+      <div className='flex flex-col gap-2'>
+        <h1 className='text-2xl font-semibold text-[#222]'>Tell us about your organization</h1>
+        <p className='text-sm text-[#757575]'>Help us personalize your experience and provide better support</p>
       </div>
 
       <div className='flex flex-col gap-4'>
         {/* Company name */}
-        <div className='flex flex-col gap-1.5'>
+        <div className='flex flex-col gap-1'>
           <Label htmlFor='company'>
             Company name <span className='text-red-500'>*</span>
           </Label>
@@ -131,7 +132,7 @@ export function LeadInfoForm({ onContinue, onSkip, initialData }: LeadInfoFormPr
         </div>
 
         {/* Industry */}
-        <div className='flex flex-col gap-1.5'>
+        <div className='flex flex-col gap-1'>
           <Label>Industry</Label>
           <Select value={industry} onValueChange={setIndustry}>
             <SelectTrigger className='w-full'>
@@ -148,7 +149,7 @@ export function LeadInfoForm({ onContinue, onSkip, initialData }: LeadInfoFormPr
         </div>
 
         {/* Infrastructure size */}
-        <div className='flex flex-col gap-1.5'>
+        <div className='flex flex-col gap-1'>
           <Label>Infrastructure size</Label>
           <div className='flex flex-col gap-2'>
             {INFRA_SIZES.map((size) => (
@@ -159,7 +160,7 @@ export function LeadInfoForm({ onContinue, onSkip, initialData }: LeadInfoFormPr
                   value={size.value}
                   checked={infrastructureSize === size.value}
                   onChange={(e) => setInfrastructureSize(e.target.value)}
-                  className='mt-0.5 accent-[#296cf2]'
+                  className='mt-0.5 accent-[#1E3A8A]'
                 />
                 <div>
                   <span className='text-sm text-[#222]'>{size.label}</span>
@@ -173,18 +174,18 @@ export function LeadInfoForm({ onContinue, onSkip, initialData }: LeadInfoFormPr
 
         {/* First name / Last name */}
         <div className='grid grid-cols-2 gap-3'>
-          <div className='flex flex-col gap-1.5'>
+          <div className='flex flex-col gap-1'>
             <Label htmlFor='firstName'>First name</Label>
             <Input id='firstName' placeholder='Alex' value={firstName} onChange={(e) => setFirstName(e.target.value)} />
           </div>
-          <div className='flex flex-col gap-1.5'>
+          <div className='flex flex-col gap-1'>
             <Label htmlFor='lastName'>Last name</Label>
             <Input id='lastName' placeholder='Kim' value={lastName} onChange={(e) => setLastName(e.target.value)} />
           </div>
         </div>
 
         {/* Primary role */}
-        <div className='flex flex-col gap-1.5'>
+        <div className='flex flex-col gap-1'>
           <Label>Primary role</Label>
           <Select value={role} onValueChange={setRole}>
             <SelectTrigger className='w-full'>
@@ -215,18 +216,19 @@ export function LeadInfoForm({ onContinue, onSkip, initialData }: LeadInfoFormPr
         </div>
       </div>
 
+      {/* Actions */}
       <div className='flex flex-col gap-3'>
         <div className='flex gap-3'>
           <Button
             variant='outline'
-            className='flex-1 border-[#adadad] text-[#222] text-sm h-10 rounded'
+            className='flex-1 border-[#E4E4E7] text-[#222] text-sm h-10 rounded-lg'
             onClick={onSkip}
           >
             Skip
           </Button>
           <Button
             disabled={!isValid}
-            className='flex-1 bg-[#296cf2] hover:bg-[#1e5ad9] text-white text-sm h-10 rounded disabled:opacity-50'
+            className='flex-1 bg-[#1E3A8A] hover:bg-[#1E3A8A]/90 text-white text-sm h-10 rounded-lg disabled:opacity-50'
             onClick={handleContinue}
           >
             Continue

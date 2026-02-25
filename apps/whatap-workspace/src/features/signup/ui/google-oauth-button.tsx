@@ -8,7 +8,7 @@ export function GoogleOAuthButton() {
   return (
     <Button
       variant='outline'
-      className='w-full h-10 border-[#adadad] text-[#222] text-sm rounded gap-2'
+      className='w-full h-10 border-[#E4E4E7] text-[#222] text-sm font-medium rounded-lg gap-2'
       onClick={handleClick}
     >
       <svg width='18' height='18' viewBox='0 0 18 18' fill='none'>

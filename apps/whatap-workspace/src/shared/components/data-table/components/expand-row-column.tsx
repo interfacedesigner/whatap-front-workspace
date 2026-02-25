@@ -61,7 +61,7 @@ export function ExpandRowColumn<TData extends object>({
               },
               defaultRenderHeader: ({ className }) => (
                 <DefaultRenderHeader
-                  className={className}
+                  {...(className != null && { className })}
                   isAllRowsExpanded={table.getIsAllRowsExpanded()}
                   resetExpanded={table.resetExpanded}
                   toggleAllRowsExpanded={table.toggleAllRowsExpanded}
@@ -88,7 +88,7 @@ export function ExpandRowColumn<TData extends object>({
               canExpand: row.getCanExpand(),
               defaultRenderCell: ({ className }) => (
                 <DefaultRenderCell
-                  className={className}
+                  {...(className != null && { className })}
                   toggleExpanded={row.toggleExpanded}
                   isExpanded={row.getIsExpanded()}
                 />

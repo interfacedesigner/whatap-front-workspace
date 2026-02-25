@@ -13,6 +13,35 @@ export interface LoginResponse {
 const API_BASE_URL = import.meta.env.VITE_API_URL || '/api';
 
 export async function loginApi(credentials: LoginCredentials): Promise<LoginResponse> {
+  // Development mock for Google OAuth
+  if (credentials.email === 'google-user@gmail.com' && credentials.password === 'google-oauth-mock') {
+    await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulate network delay
+    return {
+      user: {
+        id: 'google-user-123',
+        email: 'google-user@gmail.com',
+        name: 'Google User',
+      },
+      token: 'mock-google-oauth-token',
+    };
+  }
+
+  // Development mock for regular login (when API is not available)
+  if (import.meta.env.DEV) {
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    // Mock successful login for testing
+    if (credentials.email && credentials.password) {
+      return {
+        user: {
+          id: 'dev-user-123',
+          email: credentials.email,
+          name: credentials.email.split('@')[0] ?? '',
+        },
+        token: 'mock-dev-token',
+      };
+    }
+  }
+
   const response = await fetch(`${API_BASE_URL}/auth/login`, {
     method: 'POST',
     headers: {

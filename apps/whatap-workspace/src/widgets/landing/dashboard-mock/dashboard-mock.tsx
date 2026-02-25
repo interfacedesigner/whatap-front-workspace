@@ -3,6 +3,7 @@ import { useRef } from 'react';
 
 import { METRICS } from './constants';
 import { DashboardTopBar } from './dashboard-top-bar';
+import { EventTracingOverlay } from './event-tracing-overlay';
 import { MainChart } from './main-chart';
 import { MetricCard } from './metric-card';
 import { SparklineRow } from './sparkline-row';
@@ -15,7 +16,7 @@ export function DashboardMock() {
   const { mainChartData, secondaryChartData, sparklines } = useDashboardData();
 
   return (
-    <div ref={containerRef} className='w-full h-full bg-[#fafbfc] rounded-lg overflow-hidden flex flex-col'>
+    <div ref={containerRef} className='relative w-full h-full bg-[#fafbfc] rounded-lg overflow-hidden flex flex-col'>
       {/* Top Bar */}
       <DashboardTopBar isInView={isInView} />
 
@@ -47,6 +48,9 @@ export function DashboardMock() {
 
       {/* Bottom Sparkline Row */}
       <SparklineRow sparklines={sparklines} isInView={isInView} />
+
+      {/* Event Tracing Overlay */}
+      <EventTracingOverlay isInView={isInView} isActive={true} />
     </div>
   );
 }

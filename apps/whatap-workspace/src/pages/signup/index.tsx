@@ -38,7 +38,9 @@ function SignupPage() {
 
   return (
     <div className='min-h-screen flex items-center justify-center bg-white px-4'>
-      <SignupForm invitedEmail={invitedEmail} onSubmit={handleSubmit} isLoading={isLoading} />
+      <div className='w-full max-w-[480px] bg-white rounded-lg shadow-lg p-10'>
+        <SignupForm invitedEmail={invitedEmail} onSubmit={handleSubmit} isLoading={isLoading} />
+      </div>
     </div>
   );
 }

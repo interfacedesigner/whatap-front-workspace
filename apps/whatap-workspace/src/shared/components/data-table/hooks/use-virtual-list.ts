@@ -20,21 +20,25 @@ export function useVirtualList<TData extends object>(rows: Array<Row<TData>>) {
       (element: Element) => element?.getBoundingClientRect().height || DEFAULT_ROW_HEIGHT,
       [],
     ),
-    getItemKey: useCallback((index: number) => rows[index].id, [rows]),
+    getItemKey: useCallback((index: number) => rows[index]?.id ?? index, [rows]),
   });
 
   const virtualRows = rowVirtualizer.getVirtualItems();
   const [virtualRowsPaddingTop, virtualRowsPaddingBottom] = useMemo(() => {
     return [
       virtualRows[0]?.start ?? 0,
-      virtualRows.length > 0 ? rowVirtualizer.getTotalSize() - virtualRows[virtualRows.length - 1].end : 0,
+      virtualRows.length > 0 ? rowVirtualizer.getTotalSize() - (virtualRows[virtualRows.length - 1]?.end ?? 0) : 0,
     ];
   }, [virtualRows, rowVirtualizer]);
 
   const indexedVirtualRows = useMemo(() => {
-    return virtualRows.map((virtualRow) => {
-      return rows[virtualRow.index];
-    });
+    return virtualRows.reduce<Array<Row<TData>>>((acc, virtualRow) => {
+      const row = rows[virtualRow.index];
+      if (row != null) {
+        acc.push(row);
+      }
+      return acc;
+    }, []);
   }, [virtualRows, rows]);
 
   const onScrollToIndex = useCallback(

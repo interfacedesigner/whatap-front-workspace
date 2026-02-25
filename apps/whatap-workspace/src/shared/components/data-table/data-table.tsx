@@ -53,7 +53,7 @@ export function DataTable<TData extends object>({
     () =>
       computeColumnPinning({
         columns: columns as unknown as ColumnDefWithMeta<object>[],
-        columnOrder,
+        ...(columnOrder != null && { columnOrder }),
         enableRowSelection,
         enableExpanding,
         selectColumnId: SELECT_COLUMN_ID,
@@ -65,19 +65,19 @@ export function DataTable<TData extends object>({
   const { rowSelectionState, onRowSelectionChangeHandler } = useRowSelection<TData>({
     data,
     selectedRowIds: selectedRowIds ?? [],
-    getRowId,
-    onRowSelectionChange,
+    ...(getRowId != null && { getRowId }),
+    ...(onRowSelectionChange != null && { onRowSelectionChange }),
   });
 
   const { sortingState, onChangeSortingHandler } = useSorting<TData>({
     initialSorting,
-    onSortingChange,
-    table: table ?? undefined,
+    ...(onSortingChange != null && { onSortingChange }),
+    ...(table != null && { table }),
   });
 
   const { columnSizingState, onChangeColumnResizingHandler } = useColumnResizing({
     initialSizingState: initialSizing ?? {},
-    onResizingChange,
+    ...(onResizingChange != null && { onResizingChange }),
   });
 
   return (
@@ -93,36 +93,36 @@ export function DataTable<TData extends object>({
           <DataTableBase
             columns={columns}
             data={data}
-            enableColumnPinning={enableColumnPinning}
+            {...(enableColumnPinning != null && { enableColumnPinning })}
             tableState={{
               sorting: sortingState,
               columnSizing: columnSizingState,
               columnPinning,
               rowSelection: rowSelectionState,
-              columnOrder,
-              columnVisibility,
+              ...(columnOrder != null && { columnOrder }),
+              ...(columnVisibility != null && { columnVisibility }),
             }}
             disableStickyHeader={disableStickyHeader}
-            enableColumnResizing={enableColumnResizing}
-            enableSorting={enableSorting}
-            enableMultiSort={enableMultiSort}
-            scrollToRowId={scrollToRowId}
-            scrollToRowIdAlign={scrollToRowIdAlign}
-            renderNoData={renderNoData}
-            renderLoading={renderLoading}
-            renderExpandedRow={renderExpandedRow}
-            renderRow={renderCustomRow}
-            isLoading={isLoading}
-            tableClassName={tableClassName}
-            headerClassName={headerClassName}
-            bodyClassName={bodyClassName}
-            getRowId={getRowId}
+            {...(enableColumnResizing != null && { enableColumnResizing })}
+            {...(enableSorting != null && { enableSorting })}
+            {...(enableMultiSort != null && { enableMultiSort })}
+            {...(scrollToRowId != null && { scrollToRowId })}
+            {...(scrollToRowIdAlign != null && { scrollToRowIdAlign })}
+            {...(renderNoData != null && { renderNoData })}
+            {...(renderLoading != null && { renderLoading })}
+            {...(renderExpandedRow != null && { renderExpandedRow })}
+            {...(renderCustomRow != null && { renderRow: renderCustomRow })}
+            {...(isLoading != null && { isLoading })}
+            {...(tableClassName != null && { tableClassName })}
+            {...(headerClassName != null && { headerClassName })}
+            {...(bodyClassName != null && { bodyClassName })}
+            {...(getRowId != null && { getRowId })}
             onRowSelectionChange={onRowSelectionChangeHandler}
             onColumnSizingChange={onChangeColumnResizingHandler}
             onSortingChange={onChangeSortingHandler}
-            onRowClick={onRowClick}
+            {...(onRowClick != null && { onRowClick })}
             onCreateTable={setTable}
-            getSubRows={getSubRows}
+            {...(getSubRows != null && { getSubRows: (row: TData) => getSubRows(row, 0) })}
           />
         )}
       </TableContextProvider>

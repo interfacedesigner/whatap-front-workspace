@@ -1,6 +1,9 @@
 import { VerifyForm, VerifyingOverlay, useSignupScenario } from '@/features/signup';
 import { createFileRoute, useNavigate, useSearch } from '@tanstack/react-router';
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
+
+// OTP 만료 시간 (5분)
+const OTP_EXPIRATION_TIME = 5 * 60 * 1000;
 
 export const Route = createFileRoute('/signup/verify')({
   component: VerifyPage,
@@ -20,6 +23,19 @@ function VerifyPage() {
   const [isVerifying, setIsVerifying] = useState(false);
   const [showOverlay, setShowOverlay] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [isExpired, setIsExpired] = useState(false);
+  const [expirationKey, setExpirationKey] = useState(0);
+
+  // OTP 만료 타이머
+  useEffect(() => {
+    setIsExpired(false);
+
+    const expirationTimer = setTimeout(() => {
+      setIsExpired(true);
+    }, OTP_EXPIRATION_TIME);
+
+    return () => clearTimeout(expirationTimer);
+  }, [expirationKey]);
 
   const handleVerify = useCallback(
     async (_code: string) => {
@@ -48,17 +64,23 @@ function VerifyPage() {
   const handleResend = useCallback(() => {
     // TODO: API call to resend verification code
     setError(null);
+    setIsExpired(false);
+    // 만료 타이머 리셋을 위해 key 변경
+    setExpirationKey((prev) => prev + 1);
   }, []);
 
   return (
     <div className='min-h-screen flex items-center justify-center bg-white px-4'>
-      <VerifyForm
-        email={email}
-        onVerify={handleVerify}
-        onResend={handleResend}
-        isVerifying={isVerifying}
-        error={error}
-      />
+      <div className='w-full max-w-[480px] bg-white rounded-lg shadow-lg p-10'>
+        <VerifyForm
+          email={email}
+          onVerify={handleVerify}
+          onResend={handleResend}
+          isVerifying={isVerifying}
+          error={error}
+          isExpired={isExpired}
+        />
+      </div>
       {showOverlay && <VerifyingOverlay />}
     </div>
   );

@@ -34,11 +34,13 @@ function LeadInfoPage() {
 
   return (
     <div className='min-h-screen flex items-center justify-center bg-white px-4'>
-      <LeadInfoForm
-        onContinue={handleContinue}
-        onSkip={handleSkip}
-        initialData={scenario.leadInfoPrefill || undefined}
-      />
+      <div className='w-full max-w-[480px] bg-white rounded-lg shadow-lg p-10'>
+        <LeadInfoForm
+          onContinue={handleContinue}
+          onSkip={handleSkip}
+          initialData={scenario.leadInfoPrefill || undefined}
+        />
+      </div>
     </div>
   );
 }

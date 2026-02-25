@@ -109,25 +109,25 @@ export function DataTableBase<TData extends object>({
     data,
     columns,
     getRowId: getRowId,
-    getSubRows: getSubRows,
-    state: tableState,
+    ...(getSubRows != null && { getSubRows }),
+    ...(tableState != null && { state: tableState }),
     columnResizeMode: 'onChange',
-    enableRowSelection,
-    enableMultiRowSelection: enableRowSelection,
+    enableRowSelection: enableRowSelection ?? false,
+    enableMultiRowSelection: enableRowSelection ?? false,
     enableSorting: enableSorting,
     enableSortingRemoval: true,
     enableMultiSort: enableMultiSort,
-    enableColumnResizing,
+    enableColumnResizing: enableColumnResizing ?? false,
     enableColumnPinning,
-    enableExpanding: enableExpanding,
+    enableExpanding: enableExpanding ?? false,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getExpandedRowModel: getExpandedRowModel(),
     getGroupedRowModel: getGroupedRowModel(),
-    onRowSelectionChange: onRowSelectionChange,
-    onSortingChange: onSortingChange,
-    onColumnSizingChange: onColumnSizingChange,
-    onColumnPinningChange: onColumnPinningChange,
+    ...(onRowSelectionChange != null && { onRowSelectionChange }),
+    ...(onSortingChange != null && { onSortingChange }),
+    ...(onColumnSizingChange != null && { onColumnSizingChange }),
+    ...(onColumnPinningChange != null && { onColumnPinningChange }),
     groupedColumnMode: 'remove',
   });
 
@@ -260,8 +260,8 @@ export function DataTableBase<TData extends object>({
                   key={row.id}
                   row={row}
                   virtualRowRef={virtualRowRef}
-                  renderExpandedRow={renderExpandedRow}
-                  renderRow={renderRow}
+                  {...(renderExpandedRow != null && { renderExpandedRow })}
+                  {...(renderRow != null && { renderRow })}
                   tableStateForRerenderOnly={[
                     columns,
                     table.getState().sorting,
@@ -272,7 +272,7 @@ export function DataTableBase<TData extends object>({
                     table.getState().columnVisibility,
                     data,
                   ]}
-                  onRowClick={onRowClick ? (row) => onRowClick?.(row, index) : undefined}
+                  {...(onRowClick != null && { onRowClick: (row: TData) => onRowClick(row, index) })}
                 />
               ));
             })()}

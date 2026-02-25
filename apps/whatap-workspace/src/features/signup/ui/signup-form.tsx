@@ -105,12 +105,14 @@ export function SignupForm({ invitedEmail, onSubmit, isLoading = false }: Signup
   };
 
   return (
-    <div className='w-full max-w-sm flex flex-col gap-6'>
-      <div className='text-center'>
-        <h1 className='text-2xl font-bold text-[#222]'>Sign up</h1>
-        <p className='text-sm text-[#757575] mt-1'>Create an account to get started</p>
+    <div className='w-full flex flex-col gap-5'>
+      {/* Header */}
+      <div className='flex flex-col gap-2'>
+        <h1 className='text-2xl font-semibold text-[#222]'>Sign up</h1>
+        <p className='text-sm text-[#757575]'>Create an account to get started</p>
       </div>
 
+      {/* Google OAuth (not shown for invited users) */}
       {!isInvited && (
         <>
           <GoogleOAuthButton />
@@ -118,91 +120,101 @@ export function SignupForm({ invitedEmail, onSubmit, isLoading = false }: Signup
         </>
       )}
 
-      <form onSubmit={handleSubmit} className='flex flex-col gap-4'>
-        <div className='flex flex-col gap-1.5'>
-          <Label htmlFor='email'>Email</Label>
-          <Input
-            id='email'
-            type='email'
-            placeholder='you@company.com'
-            value={email}
-            onChange={(e) => {
-              setEmail(e.target.value);
-              if (touched.email) {
-                setEmailError(validateEmail(e.target.value));
-              }
-            }}
-            onBlur={handleEmailBlur}
-            readOnly={isInvited}
-            className={
-              touched.email && emailError
-                ? 'border-red-500 focus-visible:border-red-500 focus-visible:ring-red-500/20'
-                : ''
-            }
-          />
-          {touched.email && emailError && <p className='text-xs text-red-500'>{emailError}</p>}
-        </div>
-
-        <div className='flex flex-col gap-1.5'>
-          <Label htmlFor='password'>Password</Label>
-          <div className='relative'>
+      {/* Email/Password Form */}
+      <form onSubmit={handleSubmit} className='flex flex-col gap-8'>
+        <div className='flex flex-col gap-4'>
+          {/* Email Field */}
+          <div className='flex flex-col gap-1'>
+            <Label htmlFor='email'>Email</Label>
             <Input
-              id='password'
-              type={showPassword ? 'text' : 'password'}
-              placeholder='Enter password'
-              value={password}
+              id='email'
+              type='email'
+              placeholder='you@company.com'
+              value={email}
               onChange={(e) => {
-                setPassword(e.target.value);
-                if (touched.password) {
-                  setPasswordError(validatePassword(e.target.value));
+                setEmail(e.target.value);
+                if (touched.email) {
+                  setEmailError(validateEmail(e.target.value));
                 }
               }}
-              onBlur={handlePasswordBlur}
+              onBlur={handleEmailBlur}
+              readOnly={isInvited}
               className={
-                touched.password && passwordError
-                  ? 'border-red-500 focus-visible:border-red-500 focus-visible:ring-red-500/20 pr-10'
-                  : 'pr-10'
+                touched.email && emailError
+                  ? 'border-red-500 focus-visible:border-red-500 focus-visible:ring-red-500/20'
+                  : ''
               }
             />
-            <button
-              type='button'
-              className='absolute right-2.5 top-1/2 -translate-y-1/2 text-[#757575] hover:text-[#222]'
-              onClick={() => setShowPassword(!showPassword)}
-              tabIndex={-1}
-            >
-              {showPassword ? <EyeOff className='w-4 h-4' /> : <Eye className='w-4 h-4' />}
-            </button>
+            {touched.email && emailError && <p className='text-xs text-red-500'>{emailError}</p>}
           </div>
-          {touched.password && passwordError && <p className='text-xs text-red-500'>{passwordError}</p>}
+
+          {/* Password Field */}
+          <div className='flex flex-col gap-1'>
+            <Label htmlFor='password'>Password</Label>
+            <div className='relative'>
+              <Input
+                id='password'
+                type={showPassword ? 'text' : 'password'}
+                placeholder='Enter password'
+                value={password}
+                onChange={(e) => {
+                  setPassword(e.target.value);
+                  if (touched.password) {
+                    setPasswordError(validatePassword(e.target.value));
+                  }
+                }}
+                onBlur={handlePasswordBlur}
+                className={
+                  touched.password && passwordError
+                    ? 'border-red-500 focus-visible:border-red-500 focus-visible:ring-red-500/20 pr-10'
+                    : 'pr-10'
+                }
+              />
+              <button
+                type='button'
+                className='absolute right-3 top-1/2 -translate-y-1/2 text-[#757575] hover:text-[#222]'
+                onClick={() => setShowPassword(!showPassword)}
+                tabIndex={-1}
+              >
+                {showPassword ? <EyeOff className='w-4 h-4' /> : <Eye className='w-4 h-4' />}
+              </button>
+            </div>
+            {touched.password && passwordError && <p className='text-xs text-red-500'>{passwordError}</p>}
+          </div>
+
+          {/* Submit Button */}
+          <Button
+            type='submit'
+            disabled={!isFormValid || isLoading}
+            className='bg-[#1E3A8A] hover:bg-[#1E3A8A]/90 text-white text-sm h-10 rounded-lg w-full disabled:opacity-50'
+          >
+            {isLoading ? 'Signing up...' : 'Sign up'}
+          </Button>
         </div>
 
-        <Button
-          type='submit'
-          disabled={!isFormValid || isLoading}
-          className='bg-[#296cf2] hover:bg-[#1e5ad9] text-white text-sm h-10 rounded w-full disabled:opacity-50'
-        >
-          {isLoading ? 'Signing up...' : 'Sign up'}
-        </Button>
+        {/* Terms & Privacy */}
+        <div className='flex flex-col gap-4'>
+          <p className='text-xs text-[#757575] text-center leading-relaxed'>
+            By clicking &quot;Sign up&quot;, you agree to the{' '}
+            <a href={TERMS_URL} className='text-[#1E3A8A] hover:underline'>
+              Terms of Service
+            </a>{' '}
+            and acknowledge the{' '}
+            <a href={PRIVACY_URL} className='text-[#1E3A8A] hover:underline'>
+              Privacy Policy
+            </a>
+            .
+          </p>
+
+          {/* Sign in link */}
+          <p className='text-xs text-[#222] text-center'>
+            Already have an account?{' '}
+            <Link to={SIGNIN_ROUTE} className='text-[#1E3A8A] hover:underline font-medium'>
+              Sign in
+            </Link>
+          </p>
+        </div>
       </form>
-
-      <p className='text-xs text-[#757575] text-center leading-relaxed'>
-        By clicking &quot;Sign up&quot;, you agree to the{' '}
-        <a href={TERMS_URL} className='text-[#296cf2] hover:underline'>
-          Terms of Service
-        </a>{' '}
-        and acknowledge the{' '}
-        <a href={PRIVACY_URL} className='text-[#296cf2] hover:underline'>
-          Privacy Policy
-        </a>
-        .
-      </p>
-
-      <p className='text-sm text-[#757575] text-center'>
-        Already have an account?{' '}
-        <Link to={SIGNIN_ROUTE} className='text-[#296cf2] hover:underline font-medium'>
-          Sign in
-        </Link>
-      </p>
     </div>
   );
 }

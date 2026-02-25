@@ -1,5 +1,5 @@
 import { motion, useReducedMotion } from 'motion/react';
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { CHART_HEX } from './constants';
 
@@ -58,12 +58,32 @@ export function MainChart({ data, secondaryData, isInView, reducedMotion }: Main
   const path2Ref = useRef<SVGPathElement>(null);
   const [pathLength, setPathLength] = useState(2000);
   const [path2Length, setPath2Length] = useState(2000);
+  const [cursorPos, setCursorPos] = useState({ x: 0, y: 0 });
+  const [cursorValue, setCursorValue] = useState('12.4k');
+  const animationRef = useRef<number | null>(null);
+  const startTimeRef = useRef<number | null>(null);
   const shouldReduce = useReducedMotion();
   const noMotion = reducedMotion || shouldReduce;
 
   const linePath = dataToSmoothPath(data, W, H, PAD_LEFT, PAD);
   const areaPath = makeAreaPath(linePath, W, H, PAD_LEFT);
   const secondaryPath = dataToSmoothPath(secondaryData, W, H, PAD_LEFT, PAD);
+
+  // Calculate data value at a given position
+  const getValueAtPosition = useCallback(
+    (progress: number) => {
+      const index = progress * (data.length - 1);
+      const lowerIndex = Math.floor(index);
+      const upperIndex = Math.min(lowerIndex + 1, data.length - 1);
+      const t = index - lowerIndex;
+      const value = data[lowerIndex]! * (1 - t) + data[upperIndex]! * t;
+      if (value >= 1000) {
+        return `${(value / 1000).toFixed(1)}k`;
+      }
+      return value.toFixed(0);
+    },
+    [data],
+  );
 
   useEffect(() => {
     if (pathRef.current) {
@@ -73,6 +93,66 @@ export function MainChart({ data, secondaryData, isInView, reducedMotion }: Main
       setPath2Length(path2Ref.current.getTotalLength());
     }
   }, []);
+
+  // Animate cursor along the path
+  useEffect(() => {
+    if (noMotion || !isInView || !pathRef.current) {
+      return;
+    }
+
+    const pathElement = pathRef.current;
+    const totalLength = pathElement.getTotalLength();
+    const animationDuration = 10000; // 10 seconds for full cycle
+    const initialDelay = 3000; // Wait for line drawing animation
+
+    const animate = (timestamp: number) => {
+      if (!startTimeRef.current) {
+        startTimeRef.current = timestamp;
+      }
+
+      const elapsed = timestamp - startTimeRef.current;
+
+      if (elapsed < initialDelay) {
+        animationRef.current = requestAnimationFrame(animate);
+        return;
+      }
+
+      const animationElapsed = elapsed - initialDelay;
+      // Ping-pong animation: go forward then backward
+      const cycleTime = animationElapsed % (animationDuration * 2);
+      let progress: number;
+      if (cycleTime < animationDuration) {
+        // Going forward
+        progress = cycleTime / animationDuration;
+      } else {
+        // Going backward
+        progress = 1 - (cycleTime - animationDuration) / animationDuration;
+      }
+
+      // Add easing for smoother movement
+      const easedProgress = progress < 0.5 ? 2 * progress * progress : 1 - Math.pow(-2 * progress + 2, 2) / 2;
+
+      const point = pathElement.getPointAtLength(easedProgress * totalLength);
+      setCursorPos({ x: point.x, y: point.y });
+      setCursorValue(getValueAtPosition(easedProgress));
+
+      animationRef.current = requestAnimationFrame(animate);
+    };
+
+    // Set initial position
+    const initialPoint = pathElement.getPointAtLength(0);
+    setCursorPos({ x: initialPoint.x, y: initialPoint.y });
+    setCursorValue(getValueAtPosition(0));
+
+    animationRef.current = requestAnimationFrame(animate);
+
+    return () => {
+      if (animationRef.current) {
+        cancelAnimationFrame(animationRef.current);
+      }
+      startTimeRef.current = null;
+    };
+  }, [noMotion, isInView, getValueAtPosition]);
 
   const chartW = W - PAD_LEFT;
 
@@ -204,19 +284,16 @@ export function MainChart({ data, secondaryData, isInView, reducedMotion }: Main
           }}
         />
 
-        {/* Animated cursor line */}
-        {!noMotion && isInView && (
-          <motion.g
-            animate={{
-              x: [chartW * 0.3, chartW * 0.7, chartW * 0.5, chartW * 0.3],
-            }}
-            transition={{
-              duration: 8,
-              repeat: Infinity,
-              ease: 'easeInOut',
-              delay: 3,
+        {/* Animated cursor following the path */}
+        {!noMotion && isInView && cursorPos.x > 0 && (
+          <g
+            style={{
+              transform: `translateX(${cursorPos.x - PAD_LEFT}px)`,
+              transformOrigin: '50% 50%',
+              transformBox: 'fill-box' as const,
             }}
           >
+            {/* Vertical guide line */}
             <line
               x1={PAD_LEFT}
               y1={PAD}
@@ -226,21 +303,22 @@ export function MainChart({ data, secondaryData, isInView, reducedMotion }: Main
               strokeOpacity={0.3}
               strokeWidth={1}
             />
-            <circle cx={PAD_LEFT} cy={H * 0.4} r={3.5} fill='white' stroke={CHART_HEX.primary} strokeWidth={2} />
-            {/* Tooltip */}
+            {/* Cursor point on the path */}
+            <circle cx={PAD_LEFT} cy={cursorPos.y} r={3.5} fill='white' stroke={CHART_HEX.primary} strokeWidth={2} />
+            {/* Tooltip with dynamic value */}
             <rect
               x={PAD_LEFT - 18}
-              y={H * 0.4 - 18}
+              y={cursorPos.y - 18}
               width={36}
               height={14}
               rx={3}
               fill={CHART_HEX.primary}
               opacity={0.9}
             />
-            <text x={PAD_LEFT} y={H * 0.4 - 9} textAnchor='middle' fill='white' fontSize={7} fontWeight='bold'>
-              12.4k
+            <text x={PAD_LEFT} y={cursorPos.y - 9} textAnchor='middle' fill='white' fontSize={7} fontWeight='bold'>
+              {cursorValue}
             </text>
-          </motion.g>
+          </g>
         )}
       </svg>
     </motion.div>

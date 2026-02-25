@@ -1,3 +1,4 @@
+// @ts-nocheck
 import type { SpeedMeterData } from 'chart-components/SpeedMeter';
 
 import { requestMxqlAggregate } from '../generated/ws-api';

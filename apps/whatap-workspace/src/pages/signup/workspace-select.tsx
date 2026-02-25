@@ -28,11 +28,13 @@ function WorkspaceSelectPage() {
 
   return (
     <div className='min-h-screen flex items-center justify-center bg-white px-4'>
-      <WorkspaceSelectView
-        workspaces={workspaces}
-        inviterName={scenario.inviterName ?? undefined}
-        onJoin={handleJoin}
-      />
+      <div className='w-full max-w-[480px] bg-white rounded-lg shadow-lg p-10'>
+        <WorkspaceSelectView
+          workspaces={workspaces}
+          inviterName={scenario.inviterName ?? undefined}
+          onJoin={handleJoin}
+        />
+      </div>
     </div>
   );
 }

@@ -46,7 +46,10 @@ export const useRowSelection = <TData>({
       Object.entries(next).forEach(([id, isSelected]) => {
         if (isSelected) {
           selectedIdList.push(id);
-          selectedDataList.push(idToDataMap[id]);
+          const item = idToDataMap[id];
+          if (item !== undefined) {
+            selectedDataList.push(item);
+          }
         }
       });
 

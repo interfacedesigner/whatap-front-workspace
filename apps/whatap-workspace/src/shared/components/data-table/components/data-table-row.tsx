@@ -39,16 +39,16 @@ export const MemoizedDataTableRow = memo(
       <DataTableRow
         row={row}
         virtualRowRef={virtualRowRef}
-        renderExpandedRow={renderExpandedRow}
-        renderRow={renderRow}
-        onRowClick={onRowClick}
+        {...(renderExpandedRow != null && { renderExpandedRow })}
+        {...(renderRow != null && { renderRow })}
+        {...(onRowClick != null && { onRowClick })}
       />
     );
   },
   (prev, next) => {
     return prev.tableStateForRerenderOnly.every((state, index) => state === next.tableStateForRerenderOnly[index]);
   },
-) as <TData extends object>(props: MemoizedDataTableRowProps<TData>) => JSX.Element;
+) as <TData extends object>(props: MemoizedDataTableRowProps<TData>) => React.JSX.Element;
 
 /**
  * 구현 컴포넌트
@@ -87,10 +87,10 @@ function DataTableRow<TData extends object>({
             <DefaultRowContent
               row={row}
               virtualRowRef={virtualRowRef}
-              renderExpandedRow={renderExpandedRow}
-              onRowClick={onRowClick}
-              rowClassName={rowClassName}
-              cellClassName={cellClassName}
+              {...(renderExpandedRow != null && { renderExpandedRow })}
+              {...(onRowClick != null && { onRowClick })}
+              {...(rowClassName != null && { rowClassName })}
+              {...(cellClassName != null && { cellClassName })}
             />
           ),
         })}
@@ -102,8 +102,8 @@ function DataTableRow<TData extends object>({
     <DefaultRowContent
       row={row}
       virtualRowRef={virtualRowRef}
-      renderExpandedRow={renderExpandedRow}
-      onRowClick={onRowClick}
+      {...(renderExpandedRow != null && { renderExpandedRow })}
+      {...(onRowClick != null && { onRowClick })}
     />
   );
 }

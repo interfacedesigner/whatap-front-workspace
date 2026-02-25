@@ -101,7 +101,7 @@ export function OtpInput({ length = 6, value, onChange, onComplete, disabled = f
           disabled={disabled}
           className={cn(
             'w-10 h-12 text-center text-lg font-medium border rounded-md outline-none transition-all',
-            'focus:border-[#296cf2] focus:ring-2 focus:ring-[#296cf2]/20',
+            'focus:border-[#1E3A8A] focus:ring-2 focus:ring-[#1E3A8A]/20',
             error ? 'border-red-500 bg-red-50' : 'border-[#adadad] bg-white',
             disabled && 'opacity-50 cursor-not-allowed',
           )}
