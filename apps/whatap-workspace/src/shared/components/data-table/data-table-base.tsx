@@ -27,7 +27,7 @@ import type { ScrollAlign } from './hooks/use-virtual-list';
 import { useVirtualList } from './hooks/use-virtual-list';
 import { sanitizeCssVarToken } from './utils/css-variables';
 
-const Z_INDEX_HEADER = 100;
+const Z_INDEX_HEADER = 20;
 
 export interface DataTableBaseProps<TData extends object> {
   tableState?: Partial<TableState>;
@@ -36,6 +36,12 @@ export interface DataTableBaseProps<TData extends object> {
   tableClassName?: string;
   headerClassName?: string;
   bodyClassName?: string;
+  footerClassName?: string;
+  /** 테이블 하단 캡션 텍스트 */
+  caption?: React.ReactNode;
+  captionClassName?: string;
+  /** 테이블 Footer 렌더링 함수 */
+  renderFooter?: (table: Table<TData>) => React.ReactNode;
   renderHeader?: (header: Array<HeaderGroup<TData>>, table: Table<TData>) => React.ReactElement;
   renderBody?: (rows: Array<Row<TData>>, table: Table<TData>) => React.ReactNode;
   renderExpandedRow?: (row: TData) => React.ReactNode;
@@ -77,6 +83,10 @@ export function DataTableBase<TData extends object>({
   tableClassName,
   headerClassName,
   bodyClassName,
+  footerClassName,
+  caption,
+  captionClassName,
+  renderFooter,
   renderHeader,
   data,
   columns,
@@ -181,10 +191,16 @@ export function DataTableBase<TData extends object>({
     () => {
       const headers = table.getFlatHeaders();
       const colSizes: { [key: string]: number } = {};
+      let totalSize = 0;
       for (let i = 0; i < headers.length; i++) {
         const header = headers[i]!;
+        const colSize = header.column.getSize();
         colSizes[`--header-${sanitizeCssVarToken(header.column.id)}-size`] = header.getSize();
-        colSizes[`--col-${sanitizeCssVarToken(header.column.id)}-size`] = header.column.getSize();
+        colSizes[`--col-${sanitizeCssVarToken(header.column.id)}-size`] = colSize;
+        // leaf 컬럼만 총합에 포함 (ColumnGroup 헤더 제외)
+        if (header.subHeaders.length === 0) {
+          totalSize += colSize;
+        }
         if (header.column.getIsPinned() === 'left') {
           colSizes[`--header-${sanitizeCssVarToken(header.column.id)}-left-size`] = header.getStart('left');
           colSizes[`--col-${sanitizeCssVarToken(header.column.id)}-left-size`] = header.getStart('left');
@@ -194,20 +210,34 @@ export function DataTableBase<TData extends object>({
           colSizes[`--col-${sanitizeCssVarToken(header.column.id)}-right-size`] = header.column.getAfter('right');
         }
       }
+      colSizes['--table-total-size'] = totalSize;
       return colSizes;
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [table, columnSizing, columnPinning, columnOrder, columnVisibility, columns],
   );
 
+  // colgroup: 각 컬럼 폭을 테이블 컨테이너 대비 비율(%)로 정의
+  const visibleLeafColumns = table.getVisibleLeafColumns();
+
   return (
     <table
       ref={virtualScrollContainerRef as React.RefObject<HTMLTableElement>}
-      className={cn('min-w-full flex flex-col overflow-auto table-fixed', tableClassName)}
+      className={cn('w-full overflow-auto table-fixed', tableClassName)}
       style={columnSizeVars}
     >
+      <colgroup>
+        {visibleLeafColumns.map((column) => (
+          <col
+            key={column.id}
+            style={{
+              width: `calc(var(--col-${sanitizeCssVarToken(column.id)}-size) / var(--table-total-size) * 100%)`,
+            }}
+          />
+        ))}
+      </colgroup>
       <thead
-        className={cn('w-fit min-w-full bg-background', headerClassName)}
+        className={cn('w-full bg-background', headerClassName)}
         style={{
           zIndex: Z_INDEX_HEADER,
           ...(disableStickyHeader
@@ -240,7 +270,7 @@ export function DataTableBase<TData extends object>({
               );
             })}
       </thead>
-      <tbody className={cn('min-w-full h-full table table-fixed', bodyClassName)}>
+      <tbody className={cn('w-full', bodyClassName)}>
         <tr style={{ height: virtualRowsPaddingTop }} />
         {renderBody
           ? renderBody(indexedVirtualRows, table)
@@ -278,6 +308,14 @@ export function DataTableBase<TData extends object>({
             })()}
         <tr style={{ height: virtualRowsPaddingBottom }} />
       </tbody>
+      {renderFooter != null && (
+        <tfoot className={cn('w-full bg-blue-50', footerClassName)}>{renderFooter(table)}</tfoot>
+      )}
+      {caption != null && (
+        <caption className={cn('mt-4 caption-bottom text-sm font-normal text-muted-foreground', captionClassName)}>
+          {caption}
+        </caption>
+      )}
     </table>
   );
 }
@@ -285,7 +323,7 @@ export function DataTableBase<TData extends object>({
 function LoadingPlaceholder() {
   return (
     <tr>
-      <td className='h-full'>
+      <td colSpan={999} className='h-full'>
         <div className='flex items-center justify-center h-full w-full p-8'>
           <Loader2 className='h-8 w-8 animate-spin text-muted-foreground' />
         </div>
@@ -297,7 +335,7 @@ function LoadingPlaceholder() {
 function EmptyPlaceholder() {
   return (
     <tr>
-      <td className='h-full'>
+      <td colSpan={999} className='h-full'>
         <div className='flex flex-col items-center justify-center h-full w-full gap-2 p-8 bg-background'>
           <Info className='h-8 w-8 text-muted-foreground' />
           <span className='text-sm text-muted-foreground'>No data</span>

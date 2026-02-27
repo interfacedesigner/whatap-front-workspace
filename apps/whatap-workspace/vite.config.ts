@@ -8,7 +8,7 @@ export default defineConfig({
   plugins: [
     tanstackRouter({
       routesDirectory: './src/pages',
-      generatedRouteTree: './src/pages/routeTree.gen.ts',
+      generatedRouteTree: './src/routeTree.gen.ts',
       routeFileIgnorePattern: '.*\\.gen\\.ts$',
     }),
     react(),
@@ -26,6 +26,7 @@ export default defineConfig({
     },
   },
   server: {
+    host: true,
     port: 4000,
   },
   preview: {

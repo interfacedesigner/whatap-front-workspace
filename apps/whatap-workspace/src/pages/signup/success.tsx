@@ -10,8 +10,25 @@ function SuccessPage() {
   const scenario = useSignupScenario();
 
   const handleAction = () => {
-    // TODO: Navigate to workspace or dashboard
-    navigate({ to: '/' });
+    if (scenario.type === 'invited-single' && scenario.workspaces?.[0]) {
+      // 초대받은 단일 워크스페이스 → 해당 워크스페이스로 이동
+      navigate({
+        to: '/ws/$wsid',
+        params: { wsid: scenario.workspaces[0].id },
+      });
+    } else if (scenario.type === 'invited-multi') {
+      // 초대받은 복수 워크스페이스 → 대시보드로 이동
+      navigate({ to: '/' });
+    } else {
+      // 기본 시나리오 (신규 가입) → 온보딩으로 이동
+      // localStorage 초기화 + 하드 네비게이션으로 Jotai 메모리도 리셋
+      const storagePrefix = 'opsgent_onboarding_';
+      const keysToRemove = Object.keys(localStorage).filter((key) => key.startsWith(storagePrefix));
+      for (const key of keysToRemove) {
+        localStorage.removeItem(key);
+      }
+      window.location.href = '/onboarding';
+    }
   };
 
   // Dynamic CTA text and subtitle based on scenario

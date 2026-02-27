@@ -9,7 +9,7 @@ interface PoliciesTableProps {
 
 export function PoliciesTable({ data, onRowClick }: PoliciesTableProps) {
   return (
-    <div className='h-[480px] rounded-lg border overflow-hidden'>
+    <div className='flex-1 min-h-[200px] rounded-lg border overflow-hidden'>
       <DataTable
         data={data}
         getRowId={(row) => row.id}
@@ -24,6 +24,7 @@ export function PoliciesTable({ data, onRowClick }: PoliciesTableProps) {
           header='Roles'
           accessorKey='roleIds'
           size={100}
+          align='left'
           enableSorting={false}
           render={(row) => <span className='text-sm text-muted-foreground'>{row.roleIds.length}</span>}
         />
@@ -31,6 +32,7 @@ export function PoliciesTable({ data, onRowClick }: PoliciesTableProps) {
           header='Created'
           accessorKey='createdAt'
           size={140}
+          align='left'
           render={(row) => formatDate(row.createdAt)}
         />
       </DataTable>

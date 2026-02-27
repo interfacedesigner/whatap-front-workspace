@@ -24,7 +24,7 @@ function PoliciesPage() {
   }, [policies, searchQuery]);
 
   return (
-    <div className='space-y-6'>
+    <div className='flex flex-col gap-6 flex-1 min-h-0'>
       <ManagementPageHeader
         title='Policies'
         description='Manage access policies that define member permissions'

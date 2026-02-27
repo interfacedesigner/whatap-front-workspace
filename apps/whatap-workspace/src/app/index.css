@@ -2,13 +2,22 @@
 @import 'tw-animate-css';
 @import 'shadcn/tailwind.css';
 @import '@fontsource-variable/inter';
-@import "tw-animate-css";
-@import "shadcn/tailwind.css";
-@import "@fontsource-variable/inter";
 
 @custom-variant dark (&:is(.dark *));
 
 :root {
+  /* ── Landing page: Typography & Font Weights ── */
+  --text-xs: 12px;
+  --text-sm: 14px;
+  --text-base: 16px;
+  --text-lg: 20px;
+  --text-xl: 28px;
+  --text-2xl: 24px;
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.145 0 0);
   --popover: oklch(1 0 0);
@@ -35,8 +44,8 @@
   --sidebar-foreground: oklch(0.145 0 0);
   --sidebar-primary: oklch(0.546 0.245 262.881);
   --sidebar-primary-foreground: oklch(0.97 0.014 254.604);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
+  --sidebar-accent: oklch(0.932 0.032 264);
+  --sidebar-accent-foreground: oklch(0.295 0.15 265);
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
   --background: oklch(1 0 0);
@@ -122,14 +131,86 @@
 @layer base {
   * {
     @apply border-border outline-ring/50;
-    @apply border-border outline-ring/50;
   }
   body {
-    @apply font-sans bg-background text-foreground;
     @apply font-sans bg-background text-foreground;
   }
   html {
     @apply font-sans;
-    @apply font-sans;
   }
+}
+
+/* ── Landing page: Original color theme override ── */
+.landing-theme {
+  --background: rgba(255, 255, 255, 1.00);
+  --foreground: rgba(34, 34, 34, 1.00);
+  --card: rgba(255, 255, 255, 1.00);
+  --card-foreground: rgba(34, 34, 34, 1.00);
+  --popover: rgba(255, 255, 255, 1.00);
+  --popover-foreground: rgba(34, 34, 34, 1.00);
+  --primary: rgba(41, 108, 242, 1.00);
+  --primary-foreground: rgba(255, 255, 255, 1.00);
+  --secondary: rgba(117, 117, 117, 1.00);
+  --secondary-foreground: rgba(255, 255, 255, 1.00);
+  --muted: rgba(173, 173, 173, 1.00);
+  --muted-foreground: rgba(117, 117, 117, 1.00);
+  --accent: rgba(215, 226, 255, 1.00);
+  --accent-foreground: rgba(41, 108, 242, 1.00);
+  --destructive: rgba(243, 71, 71, 1.00);
+  --destructive-foreground: rgba(255, 255, 255, 1.00);
+  --border: rgba(173, 173, 173, 1.00);
+  --input: rgba(255, 255, 255, 1.00);
+  --ring: rgba(41, 108, 242, 1.00);
+  --chart-1: rgba(61, 169, 255, 1.00);
+  --chart-2: rgba(0, 181, 67, 1.00);
+  --chart-3: rgba(139, 82, 255, 1.00);
+  --chart-4: rgba(255, 160, 18, 1.00);
+  --chart-5: rgba(0, 190, 184, 1.00);
+  --radius: 4px;
+}
+
+.landing-theme .dark {
+  --background: rgba(34, 34, 34, 1.00);
+  --foreground: rgba(255, 255, 255, 1.00);
+  --card: rgba(34, 34, 34, 1.00);
+  --card-foreground: rgba(255, 255, 255, 1.00);
+  --popover: rgba(34, 34, 34, 1.00);
+  --popover-foreground: rgba(255, 255, 255, 1.00);
+  --primary: rgba(41, 108, 242, 1.00);
+  --primary-foreground: rgba(255, 255, 255, 1.00);
+  --secondary: rgba(117, 117, 117, 1.00);
+  --secondary-foreground: rgba(255, 255, 255, 1.00);
+  --muted: rgba(173, 173, 173, 1.00);
+  --muted-foreground: rgba(117, 117, 117, 1.00);
+  --accent: rgba(215, 226, 255, 1.00);
+  --accent-foreground: rgba(41, 108, 242, 1.00);
+  --destructive: rgba(243, 71, 71, 1.00);
+  --destructive-foreground: rgba(255, 255, 255, 1.00);
+  --border: rgba(173, 173, 173, 1.00);
+  --input: rgba(34, 34, 34, 1.00);
+  --ring: rgba(41, 108, 242, 1.00);
+  --chart-1: rgba(61, 169, 255, 1.00);
+  --chart-2: rgba(0, 181, 67, 1.00);
+  --chart-3: rgba(139, 82, 255, 1.00);
+  --chart-4: rgba(255, 160, 18, 1.00);
+  --chart-5: rgba(0, 190, 184, 1.00);
+}
+
+/* ── Landing page: StatCard spinning border animation ── */
+@property --stat-angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+
+@keyframes stat-border-spin {
+  to {
+    --stat-angle: 360deg;
+  }
+}
+
+/* ── Landing page: selection color ── */
+::selection {
+  background: rgba(41, 108, 242, 0.3);
+  color: #fff;
 }

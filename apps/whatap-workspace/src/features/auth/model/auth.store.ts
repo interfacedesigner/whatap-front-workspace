@@ -1,4 +1,4 @@
-import { useCallback, useSyncExternalStore } from 'react';
+import { useCallback, useMemo, useSyncExternalStore } from 'react';
 
 export interface User {
   id: string;
@@ -87,9 +87,12 @@ export function useAuth() {
     authStore.logout();
   }, []);
 
-  return {
-    ...state,
-    login,
-    logout,
-  };
+  return useMemo(
+    () => ({
+      ...state,
+      login,
+      logout,
+    }),
+    [state, login, logout],
+  );
 }

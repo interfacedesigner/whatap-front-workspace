@@ -104,17 +104,17 @@ export function ColumnRegistryProvider<TData extends object>({
 
   const unregisterColumn = useCallback(
     (columnId: string) => {
-      const column = columnMap.get(columnId);
-      if (column?.groupId) {
-        removeColumnFromGroup(column.groupId, columnId);
-      }
       setColumnMap((prev) => {
+        const column = prev.get(columnId);
+        if (column?.groupId) {
+          removeColumnFromGroup(column.groupId, columnId);
+        }
         const newMap = new Map(prev);
         newMap.delete(columnId);
         return newMap;
       });
     },
-    [columnMap, removeColumnFromGroup],
+    [removeColumnFromGroup],
   );
 
   const registerGroup = useCallback(

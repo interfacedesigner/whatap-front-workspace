@@ -5,6 +5,8 @@ import React, { memo } from 'react';
 
 import { sanitizeCssVarToken } from '../utils/css-variables';
 
+const Z_INDEX_STICKY_CELL = 10;
+
 interface MemoizedDataTableRowProps<TData extends object> {
   row: Row<TData>;
   virtualRowRef: (node: Element | null | undefined) => void;
@@ -24,8 +26,6 @@ interface MemoizedDataTableRowProps<TData extends object> {
   tableStateForRerenderOnly: unknown[]; // memo 비교를 위해서만 사용
   onRowClick?: (row: TData) => void;
 }
-
-const Z_INDEX_STICKY_CELL = 10;
 
 export const MemoizedDataTableRow = memo(
   function MemoizedDataTableRowWrapper<TData extends object>({
@@ -125,46 +125,48 @@ function DefaultRowContent<TData extends object>({
   rowClassName,
   cellClassName,
 }: DefaultRowContentProps<TData>) {
+  const visibleCells = row.getVisibleCells();
+
   return (
-    <tr
-      key={row.id}
-      data-index={row.index}
-      ref={virtualRowRef}
-      className={cn('min-w-full w-fit flex flex-col border-b', rowClassName)}
-    >
-      <td
-        className='p-0 flex'
-        onClick={() => {
-          onRowClick?.(row.original);
-        }}
-        style={{
-          cursor: onRowClick ? 'pointer' : 'default',
-        }}
+    <>
+      <tr
+        key={row.id}
+        data-index={row.index}
+        ref={virtualRowRef}
+        className={cn('w-full border-b', rowClassName)}
+        onClick={onRowClick ? () => onRowClick(row.original) : undefined}
+        style={onRowClick ? { cursor: 'pointer' } : undefined}
       >
-        {row.getVisibleCells().map((cell) => {
-          const colLeft = `calc(var(--col-${sanitizeCssVarToken(cell.column.id)}-left-size) * 1px)`;
-          const colRight = `calc(var(--col-${sanitizeCssVarToken(cell.column.id)}-right-size) * 1px)`;
+        {visibleCells.map((cell) => {
+          const isPinned = cell.column.getIsPinned();
 
           return (
-            <div
+            <td
               key={cell.id}
+              className={cn('p-0', isPinned && 'bg-background', cellClassName)}
               style={{
-                width: `calc(var(--col-${sanitizeCssVarToken(cell.column.id)}-size) * 1px)`,
-                position: cell.column.getIsPinned() ? 'sticky' : undefined,
-                left: colLeft,
-                right: colRight,
-                zIndex: cell.column.getIsPinned() ? Z_INDEX_STICKY_CELL : undefined,
+                position: isPinned ? 'sticky' : undefined,
+                ...(isPinned === 'left' && {
+                  left: `calc(var(--col-${sanitizeCssVarToken(cell.column.id)}-left-size) / var(--table-total-size) * 100%)`,
+                }),
+                ...(isPinned === 'right' && {
+                  right: `calc(var(--col-${sanitizeCssVarToken(cell.column.id)}-right-size) / var(--table-total-size) * 100%)`,
+                }),
+                zIndex: isPinned ? Z_INDEX_STICKY_CELL : undefined,
               }}
-              className={cn('flex', cellClassName)}
             >
               {flexRender(cell.column.columnDef.cell, cell.getContext())}
-            </div>
+            </td>
           );
         })}
-      </td>
+      </tr>
       {row.getIsExpanded() && renderExpandedRow && (
-        <td className='p-0 w-full sticky left-0'>{renderExpandedRow(row.original)}</td>
+        <tr>
+          <td colSpan={visibleCells.length} className='p-0'>
+            {renderExpandedRow(row.original)}
+          </td>
+        </tr>
       )}
-    </tr>
+    </>
   );
 }

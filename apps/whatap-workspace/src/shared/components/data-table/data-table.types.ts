@@ -26,6 +26,12 @@ export interface DataTableProps<TData extends object> {
   tableClassName?: string;
   headerClassName?: string;
   bodyClassName?: string;
+  footerClassName?: string;
+  /** 테이블 하단 캡션 텍스트 */
+  caption?: React.ReactNode;
+  captionClassName?: string;
+  /** 테이블 Footer 렌더링 함수 */
+  renderFooter?: (table: Table<TData>) => React.ReactNode;
 
   /**
    * getRowId 함수를 통해 얻은 행 ID를 기준으로 스크롤합니다.

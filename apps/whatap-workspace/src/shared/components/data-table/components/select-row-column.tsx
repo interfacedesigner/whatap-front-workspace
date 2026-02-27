@@ -126,7 +126,7 @@ function DefaultRenderHeader({
 }) {
   return (
     <div
-      className={cn('flex w-full h-full justify-center items-center py-1 px-2', className)}
+      className={cn('flex w-full h-full justify-center items-center py-3.5 px-2', className)}
       onClick={(e) => e.stopPropagation()}
     >
       <Checkbox checked={isAllRowsSelected} indeterminate={isSomeRowsSelected} onChange={onChange} />
@@ -147,7 +147,7 @@ function DefaultRenderCell({
 }) {
   return (
     <div
-      className={cn('flex w-full h-full justify-center items-center py-1 px-2', className)}
+      className={cn('flex w-full h-full justify-center items-center py-3.5 px-2', className)}
       onClick={(e) => e.stopPropagation()}
     >
       <Checkbox checked={isSelected} onChange={onChange} disabled={disabled} />

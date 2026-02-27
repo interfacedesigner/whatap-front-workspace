@@ -134,7 +134,7 @@ function DefaultRenderHeader({
 }) {
   return (
     <div
-      className={cn('flex w-full h-full justify-center items-center py-1 px-2 cursor-pointer', className)}
+      className={cn('flex w-full h-full justify-center items-center py-3.5 px-2 cursor-pointer', className)}
       onClick={(e) => {
         e.stopPropagation();
         if (isAllRowsExpanded) {
@@ -160,7 +160,7 @@ function DefaultRenderCell({
 }) {
   return (
     <div
-      className={cn('flex w-full h-full justify-center items-center cursor-pointer py-1 px-2', className)}
+      className={cn('flex w-full h-full justify-center items-center cursor-pointer py-4 px-2', className)}
       onClick={(e) => {
         e.stopPropagation();
         toggleExpanded();

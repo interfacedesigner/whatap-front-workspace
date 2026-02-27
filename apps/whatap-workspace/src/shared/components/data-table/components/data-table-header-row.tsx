@@ -42,31 +42,31 @@ function DataTableHeaderRow<TData extends object>({
   enableMultiSort: boolean;
 }) {
   return (
-    <tr key={headerGroup.id} className={cn('border-b', headerGroup.depth > 0 && 'border-t-0')}>
+    <tr key={headerGroup.id} className={cn('w-full border-b', headerGroup.depth > 0 && 'border-t-0')}>
       {headerGroup.headers.map((header) => {
         // 정렬 가능 조건: 전체 정렬이 활성화되어 있고 컬럼이 정렬을 지원하는 경우
         const canSort = header.column.getCanSort();
         const sortDirection = header.column.getIsSorted();
         const canResize = header.column.getCanResize();
-        const headerWidth = `calc(var(--header-${sanitizeCssVarToken(header.column.id)}-size) * 1px)`;
-        const headerLeft = `calc(var(--header-${sanitizeCssVarToken(header.column.id)}-left-size) * 1px)`;
-        const headerRight = `calc(var(--header-${sanitizeCssVarToken(header.column.id)}-right-size) * 1px)`;
+        const isPinned = header.column.getIsPinned();
 
         return (
           <th
             key={header.id}
             className={cn(
               'select-none p-0 text-left align-middle font-medium text-muted-foreground',
-              header.column.getIsPinned() && 'bg-background',
+              isPinned && 'bg-background',
             )}
             style={{
-              position: header.column.getIsPinned() ? 'sticky' : undefined,
-              left: headerLeft,
-              right: headerRight,
-              width: headerWidth,
-              minWidth: headerWidth,
+              position: isPinned ? 'sticky' : undefined,
+              ...(isPinned === 'left' && {
+                left: `calc(var(--header-${sanitizeCssVarToken(header.column.id)}-left-size) / var(--table-total-size) * 100%)`,
+              }),
+              ...(isPinned === 'right' && {
+                right: `calc(var(--header-${sanitizeCssVarToken(header.column.id)}-right-size) / var(--table-total-size) * 100%)`,
+              }),
               cursor: canSort ? 'pointer' : 'default',
-              zIndex: header.column.getIsPinned() ? 1 : 0,
+              zIndex: isPinned ? 1 : 0,
             }}
             onClick={(event) => {
               if (canSort) {
@@ -78,7 +78,7 @@ function DataTableHeaderRow<TData extends object>({
           >
             <div className='flex w-full h-full items-center grow relative'>
               {/* 헤더 콘텐츠: 정렬 아이콘을 위한 공간을 남기고 나머지 영역 차지 */}
-              <div className='flex-1 min-w-0'>
+              <div className='flex-1 min-w-0 w-full'>
                 {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
               </div>
               {/* 정렬 아이콘: 항상 고정 너비로 표시 */}

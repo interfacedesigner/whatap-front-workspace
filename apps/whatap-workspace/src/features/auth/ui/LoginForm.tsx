@@ -60,7 +60,24 @@ export function LoginForm() {
     onSuccess: (data) => {
       localStorage.setItem('auth_token', data.token);
       login(data.user);
-      navigate({ to: '/' });
+
+      // 온보딩 계정은 항상 새로운 온보딩으로 이동
+      // localStorage 초기화 + 하드 네비게이션으로 Jotai 메모리도 리셋
+      if (!data.workspaceId) {
+        const storagePrefix = 'opsgent_onboarding_';
+        const keysToRemove = Object.keys(localStorage).filter((key) => key.startsWith(storagePrefix));
+        for (const key of keysToRemove) {
+          localStorage.removeItem(key);
+        }
+        window.location.href = '/onboarding';
+        return;
+      }
+
+      // 기존 회원(workspaceId 보유)은 Overview로
+      navigate({
+        to: '/ws/$wsid',
+        params: { wsid: data.workspaceId },
+      });
     },
     onError: (error) => {
       // API 에러 시 패스워드 필드에 에러 표시

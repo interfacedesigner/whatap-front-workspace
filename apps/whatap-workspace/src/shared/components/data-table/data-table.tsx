@@ -36,11 +36,15 @@ export function DataTable<TData extends object>({
   renderLoading,
   renderExpandedRow,
   renderCustomRow,
+  renderFooter,
   getSubRows,
   isLoading,
   tableClassName,
   headerClassName,
   bodyClassName,
+  footerClassName,
+  caption,
+  captionClassName,
   onResizingChange,
   columnOrder,
   columnVisibility,
@@ -116,6 +120,10 @@ export function DataTable<TData extends object>({
             {...(tableClassName != null && { tableClassName })}
             {...(headerClassName != null && { headerClassName })}
             {...(bodyClassName != null && { bodyClassName })}
+            {...(footerClassName != null && { footerClassName })}
+            {...(caption != null && { caption })}
+            {...(captionClassName != null && { captionClassName })}
+            {...(renderFooter != null && { renderFooter })}
             {...(getRowId != null && { getRowId })}
             onRowSelectionChange={onRowSelectionChangeHandler}
             onColumnSizingChange={onChangeColumnResizingHandler}

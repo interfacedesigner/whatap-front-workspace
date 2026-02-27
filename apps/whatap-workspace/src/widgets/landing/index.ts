@@ -1,10 +1,8 @@
-export { Header } from './header';
-export { HeroSection } from './hero-section';
-export { ProblemSection } from './problem-section';
-export { CorePrinciplesSection } from './core-principles-section';
-export { HowItWorksSection } from './how-it-works-section';
-export { MVPFeaturesSection, MVPFeaturesSection as MvpFeaturesSection } from './mvp-features-section';
-export { CTASection, CTASection as CtaSection } from './cta-section';
-export { Footer } from './footer';
-export { DashboardMock } from './dashboard-mock';
-export { AbstractObjects, HeroAbstractBackground } from './abstract-objects';
+export { default as Navbar } from './Navbar';
+export { default as HeroSection } from './HeroSection';
+export { default as FeaturesSection } from './FeaturesSection';
+export { default as SocialProofSection } from './SocialProofSection';
+export { default as ArchitectureSection } from './ArchitectureSection';
+export { default as WorkflowSection } from './WorkflowSection';
+export { default as CTASection } from './CTASection';
+export { default as Footer } from './Footer';

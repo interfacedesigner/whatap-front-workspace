@@ -58,13 +58,45 @@ export interface Permission {
 }
 
 // ─── Role ─────────────────────────────────────────────────
+export type RoleType = 'default' | 'custom';
+
 export interface Role {
   id: string;
   name: string;
   description: string;
+  type: RoleType;
   scope: PermissionScope;
   createdAt: string;
   permissionIds: string[];
+}
+
+export const ROLE_TYPE_CONFIG: Record<RoleType, { label: string; className: string }> = {
+  default: {
+    label: 'Default',
+    className: 'bg-gray-500/10 text-gray-600 border-gray-200',
+  },
+  custom: {
+    label: 'Custom',
+    className: 'bg-blue-500/10 text-blue-700 border-blue-200',
+  },
+};
+
+export interface CreateRolePayload {
+  name: string;
+  description: string;
+  permissionIds: string[];
+}
+
+export interface UpdateRolePayload {
+  name?: string;
+  description?: string;
+  permissionIds?: string[];
+}
+
+export interface RoleImpact {
+  linkedPoliciesCount: number;
+  affectedMembersCount: number;
+  linkedPolicyNames: string[];
 }
 
 // ─── Policy ───────────────────────────────────────────────
@@ -75,4 +107,18 @@ export interface Policy {
   createdAt: string;
   roleIds: string[];
   memberIds: string[];
+}
+
+// ─── Invite Member Payload ────────────────────────────────
+export interface InviteMemberPayload {
+  email: string;
+  name?: string;
+  policyIds: string[];
+  welcomeMessage?: string;
+}
+
+// ─── Effective Permission ─────────────────────────────────
+export interface EffectivePermission extends Permission {
+  sourceRoleName: string;
+  sourcePolicyName: string;
 }

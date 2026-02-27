@@ -8,6 +8,7 @@ export interface LoginCredentials {
 export interface LoginResponse {
   user: User;
   token: string;
+  workspaceId?: string;
 }
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || '/api';
@@ -31,6 +32,37 @@ export async function loginApi(credentials: LoginCredentials): Promise<LoginResp
     await new Promise((resolve) => setTimeout(resolve, 1000));
     // Mock successful login for testing
     if (credentials.email && credentials.password) {
+      // 기존 회원: workspace가 이미 존재하는 사용자
+      if (credentials.email === 'existed-user@whatap.io') {
+        return {
+          user: {
+            id: 'existed-user-001',
+            email: 'existed-user@whatap.io',
+            name: 'WhaTap User',
+          },
+          token: 'mock-existed-user-token',
+          workspaceId: 'ws-default-001',
+        };
+      }
+      // 온보딩 사용자: workspace 미생성 → 온보딩으로 라우팅
+      const onboardingEmails = [
+        'onboarding@whatap.io',
+        'onboarding-01@whatap.io',
+        'onboarding-02@whatap.io',
+        'onboarding-03@whatap.io',
+      ];
+      if (onboardingEmails.includes(credentials.email)) {
+        const idx = onboardingEmails.indexOf(credentials.email);
+        return {
+          user: {
+            id: `onboarding-user-${String(idx + 1).padStart(3, '0')}`,
+            email: credentials.email,
+            name: `Onboarding User ${idx + 1}`,
+          },
+          token: `mock-onboarding-token-${idx + 1}`,
+          // workspaceId 없음 → 온보딩 진행 필요
+        };
+      }
       return {
         user: {
           id: 'dev-user-123',

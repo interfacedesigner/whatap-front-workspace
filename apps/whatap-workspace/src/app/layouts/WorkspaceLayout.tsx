@@ -1,5 +1,13 @@
+import { useAuth } from '@/features/auth';
 import { Avatar, AvatarFallback } from '@/shared/components/ui/avatar';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/shared/components/ui/collapsible';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/shared/components/ui/dropdown-menu';
 import {
   Sidebar,
   SidebarContent,
@@ -19,22 +27,21 @@ import {
   SidebarSeparator,
   SidebarTrigger,
 } from '@/shared/components/ui/sidebar';
-import { Link, useMatchRoute, useParams } from '@tanstack/react-router';
+import { OnboardingSidebarWidget } from '@/widgets/onboarding';
+import { Link, useMatchRoute, useNavigate, useParams } from '@tanstack/react-router';
 import {
-  Activity,
-  AlertTriangle,
   ChevronDown,
   ChevronRight,
   FileText,
   Home,
-  LifeBuoy,
+  LogOut,
   type LucideIcon,
-  MessageSquare,
   Search,
   Server,
   Settings,
-  Shield,
   ShieldCheck,
+  SlidersHorizontal,
+  User,
   Users,
 } from 'lucide-react';
 import type { ReactNode } from 'react';
@@ -66,50 +73,29 @@ export function WorkspaceLayout({ children }: WorkspaceLayoutProps) {
         title: 'Workspace',
         items: [
           {
-            label: 'Server Inventories',
+            label: 'Workspace',
             icon: Server,
-            href: `${wsBase}/server/inventory-map`,
+            href: wsBase,
+            children: [{ label: 'Server Inventories', href: `${wsBase}/server/inventory-map` }],
           },
           {
-            label: 'Events',
-            icon: AlertTriangle,
-            href: `${wsBase}/events`,
-          },
-          {
-            label: 'Incidents',
-            icon: Shield,
-            href: `${wsBase}/incidents`,
-          },
-          {
-            label: 'Settings',
-            icon: Settings,
-            href: `${wsBase}/settings`,
+            label: 'Preferences',
+            icon: SlidersHorizontal,
+            href: `${wsBase}/preferences`,
+            children: [
+              { label: 'Events', href: `${wsBase}/events` },
+              { label: 'Incidents', href: `${wsBase}/incidents` },
+              { label: 'Agents', href: `${wsBase}/agents` },
+            ],
           },
         ],
       },
       {
         title: 'Management',
         items: [
-          {
-            label: 'Members',
-            icon: Users,
-            href: `${wsBase}/management/members`,
-          },
-          {
-            label: 'Policies',
-            icon: ShieldCheck,
-            href: `${wsBase}/management/policies`,
-          },
-          {
-            label: 'Roles',
-            icon: FileText,
-            href: `${wsBase}/management/roles`,
-          },
-          {
-            label: 'Audit Logs',
-            icon: Activity,
-            href: `${wsBase}/management/audit-logs`,
-          },
+          { label: 'Members', icon: Users, href: `${wsBase}/management/members` },
+          { label: 'Roles', icon: FileText, href: `${wsBase}/management/roles` },
+          { label: 'Policies', icon: ShieldCheck, href: `${wsBase}/management/policies` },
         ],
       },
     ],
@@ -129,13 +115,13 @@ export function WorkspaceLayout({ children }: WorkspaceLayoutProps) {
     <SidebarProvider>
       <Sidebar
         collapsible='icon'
-        className='border-r bg-[#EFF6FF] [&_[data-sidebar=sidebar]]:bg-[#EFF6FF] [&_[data-sidebar=inner]]:bg-[#EFF6FF]'
+        className='border-r bg-[#EFF6FF] dark:bg-slate-950 [&_[data-sidebar=sidebar]]:bg-[#EFF6FF] dark:[&_[data-sidebar=sidebar]]:bg-slate-950 [&_[data-sidebar=inner]]:bg-[#EFF6FF] dark:[&_[data-sidebar=inner]]:bg-slate-950'
       >
         {/* Header: Logo + Search (Figma: Header section) */}
         <SidebarHeader className='gap-3 p-3'>
           <SidebarMenu>
             <SidebarMenuItem>
-              <SidebarMenuButton size='lg' asChild className='hover:bg-blue-100/60'>
+              <SidebarMenuButton size='lg' asChild className='hover:bg-blue-100/60 dark:hover:bg-blue-900/30'>
                 <Link to={wsBase}>
                   <div className='bg-[#1E3A8A] text-white flex items-center justify-center rounded-lg size-8 shrink-0'>
                     <span className='font-bold text-sm'>O</span>
@@ -144,7 +130,6 @@ export function WorkspaceLayout({ children }: WorkspaceLayoutProps) {
                     <span className='font-semibold text-sm'>OpsGent</span>
                     <span className='text-[11px] text-zinc-500'>v1.0.0</span>
                   </div>
-                  <ChevronDown className='ml-auto size-4 text-zinc-400' />
                 </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>
@@ -154,21 +139,24 @@ export function WorkspaceLayout({ children }: WorkspaceLayoutProps) {
           <div className='group-data-[collapsible=icon]:hidden'>
             <div className='relative'>
               <Search className='pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 size-4 text-zinc-400' />
-              <SidebarInput placeholder='Search...' className='h-9 pl-9 bg-white border-zinc-200' />
+              <SidebarInput
+                placeholder='Search...'
+                className='h-9 pl-9 bg-white dark:bg-slate-900 border-zinc-200 dark:border-zinc-700'
+              />
             </div>
           </div>
         </SidebarHeader>
 
         <SidebarContent className='gap-0'>
           {/* Overview - standalone item */}
-          <SidebarGroup className='py-1'>
+          <SidebarGroup className='py-1 px-3'>
             <SidebarMenu>
               <SidebarMenuItem>
                 <SidebarMenuButton
                   asChild
                   isActive={isOverviewActive}
                   tooltip='Overview'
-                  className='hover:bg-blue-100/60'
+                  className='hover:bg-blue-100/60 dark:hover:bg-blue-900/30'
                 >
                   <Link to={wsBase}>
                     <Home />
@@ -179,48 +167,25 @@ export function WorkspaceLayout({ children }: WorkspaceLayoutProps) {
             </SidebarMenu>
           </SidebarGroup>
 
-          {/* Nav Groups (Figma: Collapsible SidebarGroup with Title) */}
+          {/* Nav Groups */}
           {navGroups.map((group) => (
             <NavGroupSection key={group.title} group={group} isActive={isActive} />
           ))}
         </SidebarContent>
 
-        {/* Footer (Figma: bottom section with Support/Feedback + User) */}
+        {/* Footer */}
         <SidebarFooter className='gap-1 p-3'>
+          {/* Onboarding Progress Widget (미완료 시에만 표시) */}
+          <div className='group-data-[collapsible=icon]:hidden mb-1'>
+            <OnboardingSidebarWidget />
+          </div>
+
+          <SidebarSeparator className='bg-zinc-200 dark:bg-zinc-700' />
+
+          {/* User Dropdown */}
           <SidebarMenu>
             <SidebarMenuItem>
-              <SidebarMenuButton asChild tooltip='Support' className='hover:bg-blue-100/60 text-zinc-600'>
-                <a href='#'>
-                  <LifeBuoy />
-                  <span>Support</span>
-                </a>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-            <SidebarMenuItem>
-              <SidebarMenuButton asChild tooltip='Feedback' className='hover:bg-blue-100/60 text-zinc-600'>
-                <a href='#'>
-                  <MessageSquare />
-                  <span>Feedback</span>
-                </a>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-          </SidebarMenu>
-
-          <SidebarSeparator className='bg-zinc-200' />
-
-          {/* User (Figma: Avatar item at bottom) */}
-          <SidebarMenu>
-            <SidebarMenuItem>
-              <SidebarMenuButton size='lg' tooltip='Account' className='hover:bg-blue-100/60'>
-                <Avatar size='sm' className='shrink-0'>
-                  <AvatarFallback className='bg-blue-100 text-blue-900 text-xs'>U</AvatarFallback>
-                </Avatar>
-                <div className='flex flex-col gap-0.5 leading-none min-w-0'>
-                  <span className='font-medium text-sm truncate'>User</span>
-                  <span className='text-[11px] text-zinc-500 truncate'>user@example.com</span>
-                </div>
-                <ChevronDown className='ml-auto size-4 text-zinc-400 shrink-0' />
-              </SidebarMenuButton>
+              <UserDropdown wsBase={wsBase} />
             </SidebarMenuItem>
           </SidebarMenu>
         </SidebarFooter>
@@ -230,82 +195,55 @@ export function WorkspaceLayout({ children }: WorkspaceLayoutProps) {
 
       <SidebarInset>
         {/* Top Header Bar */}
-        <header className='flex h-14 items-center gap-2 bg-white px-4'>
+        <header className='flex h-14 items-center gap-2 bg-white dark:bg-slate-950 px-4'>
           <SidebarTrigger />
           <div className='flex-1' />
         </header>
 
         {/* Main Content */}
-        <main className='flex-1 overflow-auto p-6 bg-background'>{children}</main>
+        <div className='flex-1 overflow-auto p-4 bg-background flex flex-col min-h-0'>{children}</div>
       </SidebarInset>
     </SidebarProvider>
   );
 }
 
-/** Collapsible Nav Group (Figma: Title + Collapsible SidebarGroup) */
+/** Static Nav Group — title always visible, no collapsible toggle */
 function NavGroupSection({ group, isActive }: { group: NavGroup; isActive: (href: string) => boolean }) {
-  const [isOpen, setIsOpen] = useState(true);
-
   return (
     <SidebarGroup className='py-1 px-3'>
-      <Collapsible open={isOpen} onOpenChange={setIsOpen}>
-        <CollapsibleTrigger className='flex w-full items-center justify-between py-2 group-data-[collapsible=icon]:hidden'>
-          <span className='text-sm font-semibold text-zinc-500'>{group.title}</span>
-          <ChevronRight
-            className={`size-4 text-zinc-400 transition-transform duration-200 ${isOpen ? 'rotate-90' : ''}`}
-          />
-        </CollapsibleTrigger>
+      {/* Static title (hidden in icon-only mode) */}
+      <div className='flex w-full items-center py-2 group-data-[collapsible=icon]:hidden'>
+        <span className='text-sm font-semibold text-zinc-500 dark:text-zinc-400'>{group.title}</span>
+      </div>
 
-        <CollapsibleContent>
-          <SidebarMenu>
-            {group.items.map((item) => {
-              if (item.children && item.children.length > 0) {
-                return <CollapsibleNavItem key={item.label} item={item} isActive={isActive} />;
-              }
+      <SidebarMenu>
+        {group.items.map((item) => {
+          if (item.children && item.children.length > 0) {
+            return <CollapsibleNavItem key={item.label} item={item} isActive={isActive} />;
+          }
 
-              return (
-                <SidebarMenuItem key={item.label}>
-                  <SidebarMenuButton
-                    asChild
-                    isActive={isActive(item.href)}
-                    tooltip={item.label}
-                    className='hover:bg-blue-100/60'
-                  >
-                    <Link to={item.href}>
-                      <item.icon />
-                      <span>{item.label}</span>
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              );
-            })}
-          </SidebarMenu>
-        </CollapsibleContent>
-      </Collapsible>
-
-      {/* Icon-only mode: show items without collapsible wrapper */}
-      <SidebarMenu className='hidden group-data-[collapsible=icon]:flex'>
-        {group.items.map((item) => (
-          <SidebarMenuItem key={item.label}>
-            <SidebarMenuButton
-              asChild
-              isActive={isActive(item.href)}
-              tooltip={item.label}
-              className='hover:bg-blue-100/60'
-            >
-              <Link to={item.href}>
-                <item.icon />
-                <span>{item.label}</span>
-              </Link>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-        ))}
+          return (
+            <SidebarMenuItem key={item.label}>
+              <SidebarMenuButton
+                asChild
+                isActive={isActive(item.href)}
+                tooltip={item.label}
+                className='hover:bg-blue-100/60 dark:hover:bg-blue-900/30'
+              >
+                <Link to={item.href}>
+                  <item.icon />
+                  <span>{item.label}</span>
+                </Link>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+          );
+        })}
       </SidebarMenu>
     </SidebarGroup>
   );
 }
 
-/** Collapsible Nav Item with sub-menu (Figma: vertical separator + indented items) */
+/** Collapsible Nav Item with sub-menu */
 function CollapsibleNavItem({
   item,
   isActive,
@@ -325,7 +263,11 @@ function CollapsibleNavItem({
     <Collapsible open={isOpen} onOpenChange={setIsOpen} asChild>
       <SidebarMenuItem>
         <CollapsibleTrigger asChild>
-          <SidebarMenuButton isActive={isActive(item.href)} tooltip={item.label} className='hover:bg-blue-100/60'>
+          <SidebarMenuButton
+            isActive={isActive(item.href)}
+            tooltip={item.label}
+            className='hover:bg-blue-100/60 dark:hover:bg-blue-900/30'
+          >
             <Icon />
             <span>{item.label}</span>
             <ChevronRight
@@ -348,5 +290,58 @@ function CollapsibleNavItem({
         </CollapsibleContent>
       </SidebarMenuItem>
     </Collapsible>
+  );
+}
+
+/** User Dropdown (Profile / Settings / Log-out) */
+function UserDropdown({ wsBase }: { wsBase: string }) {
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = useCallback(() => {
+    logout();
+    navigate({ to: '/login' });
+  }, [logout, navigate]);
+
+  const displayName = user?.name ?? 'User';
+  const displayEmail = user?.email ?? '';
+  const initials = displayName.charAt(0).toUpperCase();
+
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <SidebarMenuButton size='lg' tooltip='Account' className='hover:bg-blue-100/60 dark:hover:bg-blue-900/30'>
+          <Avatar size='sm' className='shrink-0'>
+            <AvatarFallback className='bg-blue-100 dark:bg-blue-900 text-blue-900 dark:text-blue-100 text-xs'>
+              {initials}
+            </AvatarFallback>
+          </Avatar>
+          <div className='flex flex-col gap-0.5 leading-none min-w-0'>
+            <span className='font-medium text-sm truncate'>{displayName}</span>
+            <span className='text-[11px] text-zinc-500 truncate'>{displayEmail}</span>
+          </div>
+          <ChevronDown className='ml-auto size-4 text-zinc-400 shrink-0' />
+        </SidebarMenuButton>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent side='top' align='start' className='w-56'>
+        <DropdownMenuItem asChild>
+          <a href={`${wsBase}/profile`} className='gap-2'>
+            <User className='size-4' />
+            <span>Profile</span>
+          </a>
+        </DropdownMenuItem>
+        <DropdownMenuItem asChild>
+          <a href={`${wsBase}/settings`} className='gap-2'>
+            <Settings className='size-4' />
+            <span>Settings</span>
+          </a>
+        </DropdownMenuItem>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem onClick={handleLogout} className='gap-2 text-red-600 focus:text-red-600'>
+          <LogOut className='size-4' />
+          <span>Log out</span>
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
   );
 }

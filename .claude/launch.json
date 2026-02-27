@@ -1,0 +1,17 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "whatap-workspace-dev",
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": ["--filter", "whatap-workspace", "dev"],
+      "port": 4000
+    },
+    {
+      "name": "whatap-workspace-storybook",
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": ["--filter", "whatap-workspace", "storybook"],
+      "port": 6007
+    }
+  ]
+}

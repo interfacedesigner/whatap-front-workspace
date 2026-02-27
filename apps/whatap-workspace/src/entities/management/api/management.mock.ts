@@ -3,6 +3,9 @@
  * @description Members, Policies, Roles, Permissions dummy data
  */
 import type {
+  CreateRolePayload,
+  EffectivePermission,
+  InviteMemberPayload,
   Member,
   Permission,
   PermissionAction,
@@ -10,6 +13,8 @@ import type {
   PermissionScope,
   Policy,
   Role,
+  RoleImpact,
+  UpdateRolePayload,
 } from '../model/management.types';
 
 // ─── Permissions (24개) ───────────────────────────────────
@@ -64,6 +69,7 @@ const ROLES: Role[] = [
     id: 'role-001',
     name: 'Viewer',
     description: 'Read-only access to dashboards, servers, and monitoring data',
+    type: 'default',
     scope: 'workspace',
     createdAt: '2025-03-15T09:00:00Z',
     permissionIds: ['perm-001', 'perm-003', 'perm-007', 'perm-009', 'perm-011', 'perm-015'],
@@ -72,6 +78,7 @@ const ROLES: Role[] = [
     id: 'role-002',
     name: 'Developer',
     description: 'Development-level access including logs, APM, and incident management',
+    type: 'default',
     scope: 'workspace',
     createdAt: '2025-03-15T09:30:00Z',
     permissionIds: ['perm-001', 'perm-003', 'perm-007', 'perm-008', 'perm-009', 'perm-010', 'perm-011', 'perm-012'],
@@ -80,6 +87,7 @@ const ROLES: Role[] = [
     id: 'role-003',
     name: 'Operator',
     description: 'Server and infrastructure operations with event and incident management',
+    type: 'custom',
     scope: 'workspace',
     createdAt: '2025-04-01T10:00:00Z',
     permissionIds: [
@@ -99,6 +107,7 @@ const ROLES: Role[] = [
     id: 'role-004',
     name: 'SRE Lead',
     description: 'Full operational control including server, incident, and event management',
+    type: 'custom',
     scope: 'workspace',
     createdAt: '2025-04-10T14:00:00Z',
     permissionIds: [
@@ -124,6 +133,7 @@ const ROLES: Role[] = [
     id: 'role-005',
     name: 'Admin',
     description: 'Cross-workspace administrative access for role, policy, and member management',
+    type: 'default',
     scope: 'cross-workspace',
     createdAt: '2025-03-10T08:00:00Z',
     permissionIds: [
@@ -143,6 +153,7 @@ const ROLES: Role[] = [
     id: 'role-006',
     name: 'Auditor',
     description: 'Read-only access across all workspaces for compliance and audit purposes',
+    type: 'custom',
     scope: 'cross-workspace',
     createdAt: '2025-05-01T11:00:00Z',
     permissionIds: [
@@ -225,6 +236,55 @@ const POLICIES: Policy[] = [
     createdAt: '2025-05-10T09:00:00Z',
     roleIds: ['role-001'],
     memberIds: ['mem-005', 'mem-008', 'mem-012', 'mem-015'],
+  },
+  // ─── Test Policies (Role별 1:1 확인용) ──────────────────
+  {
+    id: 'pol-test-viewer',
+    name: 'Test: Viewer Only',
+    description: 'Test policy for Viewer role verification',
+    createdAt: '2026-02-27T00:00:00Z',
+    roleIds: ['role-001'],
+    memberIds: ['mem-016'],
+  },
+  {
+    id: 'pol-test-developer',
+    name: 'Test: Developer Only',
+    description: 'Test policy for Developer role verification',
+    createdAt: '2026-02-27T00:00:00Z',
+    roleIds: ['role-002'],
+    memberIds: ['mem-017'],
+  },
+  {
+    id: 'pol-test-operator',
+    name: 'Test: Operator Only',
+    description: 'Test policy for Operator role verification',
+    createdAt: '2026-02-27T00:00:00Z',
+    roleIds: ['role-003'],
+    memberIds: ['mem-018'],
+  },
+  {
+    id: 'pol-test-srelead',
+    name: 'Test: SRE Lead Only',
+    description: 'Test policy for SRE Lead role verification',
+    createdAt: '2026-02-27T00:00:00Z',
+    roleIds: ['role-004'],
+    memberIds: ['mem-019'],
+  },
+  {
+    id: 'pol-test-admin',
+    name: 'Test: Admin Only',
+    description: 'Test policy for Admin role verification',
+    createdAt: '2026-02-27T00:00:00Z',
+    roleIds: ['role-005'],
+    memberIds: ['mem-020'],
+  },
+  {
+    id: 'pol-test-auditor',
+    name: 'Test: Auditor Only',
+    description: 'Test policy for Auditor role verification',
+    createdAt: '2026-02-27T00:00:00Z',
+    roleIds: ['role-006'],
+    memberIds: ['mem-021'],
   },
 ];
 
@@ -365,6 +425,61 @@ const MEMBERS: Member[] = [
     lastLoginAt: '2026-02-21T18:00:00Z',
     policyIds: ['pol-006', 'pol-008'],
   },
+  // ─── Test Members (Role별 @whatap.io 확인용) ─────────────
+  {
+    id: 'mem-016',
+    name: 'Test Viewer',
+    email: 'viewer@whatap.io',
+    status: 'active',
+    createdAt: '2026-02-27T00:00:00Z',
+    lastLoginAt: '2026-02-27T09:00:00Z',
+    policyIds: ['pol-test-viewer'],
+  },
+  {
+    id: 'mem-017',
+    name: 'Test Developer',
+    email: 'developer@whatap.io',
+    status: 'active',
+    createdAt: '2026-02-27T00:00:00Z',
+    lastLoginAt: '2026-02-27T09:00:00Z',
+    policyIds: ['pol-test-developer'],
+  },
+  {
+    id: 'mem-018',
+    name: 'Test Operator',
+    email: 'operator@whatap.io',
+    status: 'active',
+    createdAt: '2026-02-27T00:00:00Z',
+    lastLoginAt: '2026-02-27T09:00:00Z',
+    policyIds: ['pol-test-operator'],
+  },
+  {
+    id: 'mem-019',
+    name: 'Test SRE Lead',
+    email: 'sre-lead@whatap.io',
+    status: 'active',
+    createdAt: '2026-02-27T00:00:00Z',
+    lastLoginAt: '2026-02-27T09:00:00Z',
+    policyIds: ['pol-test-srelead'],
+  },
+  {
+    id: 'mem-020',
+    name: 'Test Admin',
+    email: 'admin@whatap.io',
+    status: 'active',
+    createdAt: '2026-02-27T00:00:00Z',
+    lastLoginAt: '2026-02-27T09:00:00Z',
+    policyIds: ['pol-test-admin'],
+  },
+  {
+    id: 'mem-021',
+    name: 'Test Auditor',
+    email: 'auditor@whatap.io',
+    status: 'active',
+    createdAt: '2026-02-27T00:00:00Z',
+    lastLoginAt: '2026-02-27T09:00:00Z',
+    policyIds: ['pol-test-auditor'],
+  },
 ];
 
 // ─── Data Access Functions ─────────────────────────────────
@@ -470,4 +585,213 @@ export function formatDateTime(isoString: string | null): string {
     hour: '2-digit',
     minute: '2-digit',
   });
+}
+
+// ─── Member CRUD & Extended Queries ──────────────────────
+
+export function getMemberByEmail(email: string): Member | undefined {
+  return MEMBERS.find((m) => m.email.toLowerCase() === email.toLowerCase());
+}
+
+export function getRoleNamesByMemberId(memberId: string): string[] {
+  const roles = getRolesByMemberId(memberId);
+  return roles.map((r) => r.name);
+}
+
+export function getPermissionsByMemberId(memberId: string): EffectivePermission[] {
+  const policies = getPoliciesByMemberId(memberId);
+  const seen = new Set<string>();
+  const result: EffectivePermission[] = [];
+
+  for (const policy of policies) {
+    for (const roleId of policy.roleIds) {
+      const role = getRoleById(roleId);
+      if (!role) {
+        continue;
+      }
+      for (const permId of role.permissionIds) {
+        const key = `${permId}-${role.name}-${policy.name}`;
+        if (seen.has(key)) {
+          continue;
+        }
+        seen.add(key);
+        const perm = getPermissionById(permId);
+        if (!perm) {
+          continue;
+        }
+        result.push({
+          ...perm,
+          sourceRoleName: role.name,
+          sourcePolicyName: policy.name,
+        });
+      }
+    }
+  }
+
+  return result;
+}
+
+let memberCounter = 21; // MEMBERS.length (15 original + 6 test accounts)
+
+export function addMember(payload: InviteMemberPayload): Member {
+  memberCounter += 1;
+  const newMember: Member = {
+    id: `mem-${String(memberCounter).padStart(3, '0')}`,
+    name: payload.name ?? payload.email.split('@')[0] ?? payload.email,
+    email: payload.email,
+    status: 'pending',
+    createdAt: new Date().toISOString(),
+    lastLoginAt: null,
+    policyIds: [...payload.policyIds],
+  };
+  MEMBERS.push(newMember);
+
+  // Update policies' memberIds
+  for (const policyId of payload.policyIds) {
+    const policy = POLICIES.find((p) => p.id === policyId);
+    if (policy && !policy.memberIds.includes(newMember.id)) {
+      policy.memberIds.push(newMember.id);
+    }
+  }
+
+  return newMember;
+}
+
+export function updateMember(id: string, updates: Partial<Pick<Member, 'name' | 'status'>>): Member | undefined {
+  const member = MEMBERS.find((m) => m.id === id);
+  if (!member) {
+    return undefined;
+  }
+  if (updates.name != null) {
+    member.name = updates.name;
+  }
+  if (updates.status != null) {
+    member.status = updates.status;
+  }
+  return member;
+}
+
+export function deleteMember(id: string): boolean {
+  const index = MEMBERS.findIndex((m) => m.id === id);
+  if (index === -1) {
+    return false;
+  }
+
+  // Remove from all policies
+  for (const policy of POLICIES) {
+    policy.memberIds = policy.memberIds.filter((mid) => mid !== id);
+  }
+
+  MEMBERS.splice(index, 1);
+  return true;
+}
+
+export function addPolicyToMember(memberId: string, policyId: string): boolean {
+  const member = MEMBERS.find((m) => m.id === memberId);
+  const policy = POLICIES.find((p) => p.id === policyId);
+  if (!member || !policy) {
+    return false;
+  }
+
+  if (!member.policyIds.includes(policyId)) {
+    member.policyIds.push(policyId);
+  }
+  if (!policy.memberIds.includes(memberId)) {
+    policy.memberIds.push(memberId);
+  }
+  return true;
+}
+
+export function removePolicyFromMember(memberId: string, policyId: string): boolean {
+  const member = MEMBERS.find((m) => m.id === memberId);
+  const policy = POLICIES.find((p) => p.id === policyId);
+  if (!member || !policy) {
+    return false;
+  }
+
+  member.policyIds = member.policyIds.filter((id) => id !== policyId);
+  policy.memberIds = policy.memberIds.filter((id) => id !== memberId);
+  return true;
+}
+
+export function getUnassignedPolicies(memberId: string): Policy[] {
+  const member = getMemberById(memberId);
+  if (!member) {
+    return [];
+  }
+  return POLICIES.filter((p) => !member.policyIds.includes(p.id));
+}
+
+// ─── Role CRUD & Extended Queries ────────────────────────
+
+let roleCounter = ROLES.length;
+
+export function addRole(payload: CreateRolePayload): Role {
+  roleCounter += 1;
+  const newRole: Role = {
+    id: `role-${String(roleCounter).padStart(3, '0')}`,
+    name: payload.name,
+    description: payload.description,
+    type: 'custom',
+    scope: 'workspace',
+    createdAt: new Date().toISOString(),
+    permissionIds: [...payload.permissionIds],
+  };
+  ROLES.push(newRole);
+  return newRole;
+}
+
+export function updateRole(id: string, updates: UpdateRolePayload): Role | undefined {
+  const role = ROLES.find((r) => r.id === id);
+  if (!role) {
+    return undefined;
+  }
+  // Default roles are protected from edits
+  if (role.type === 'default') {
+    return undefined;
+  }
+  if (updates.name != null) {
+    role.name = updates.name;
+  }
+  if (updates.description != null) {
+    role.description = updates.description;
+  }
+  if (updates.permissionIds != null) {
+    role.permissionIds = [...updates.permissionIds];
+  }
+  return role;
+}
+
+export function deleteRole(id: string): boolean {
+  const index = ROLES.findIndex((r) => r.id === id);
+  if (index === -1) {
+    return false;
+  }
+  const role = ROLES[index];
+  // Default roles cannot be deleted
+  if (role != null && role.type === 'default') {
+    return false;
+  }
+
+  // Remove from all policies' roleIds
+  for (const policy of POLICIES) {
+    policy.roleIds = policy.roleIds.filter((rid) => rid !== id);
+  }
+
+  ROLES.splice(index, 1);
+  return true;
+}
+
+export function isRoleNameDuplicate(name: string, excludeId?: string): boolean {
+  return ROLES.some((r) => r.name.toLowerCase() === name.toLowerCase() && r.id !== excludeId);
+}
+
+export function getRoleImpact(roleId: string): RoleImpact {
+  const linkedPolicies = POLICIES.filter((p) => p.roleIds.includes(roleId));
+  const affectedMemberIds = new Set(linkedPolicies.flatMap((p) => p.memberIds));
+  return {
+    linkedPoliciesCount: linkedPolicies.length,
+    affectedMembersCount: affectedMemberIds.size,
+    linkedPolicyNames: linkedPolicies.map((p) => p.name),
+  };
 }

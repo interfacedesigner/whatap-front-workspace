@@ -1,27 +1,21 @@
 /**
  * RecentEventsTimeline Widget
- * @description 최근 이벤트 타임라인 (알림 + 시스템 이벤트)
+ * @description 최근 이벤트 타임라인 — Server / Incident / ActionBook / System 타입 기반
+ * 최대 5개 표시
  */
+import { Badge } from '@/shared/components/ui/badge';
 import { Card, CardAction, CardContent, CardHeader, CardTitle } from '@/shared/components/ui/card';
 import { cn } from '@/shared/lib/utils';
-import {
-  AlertTriangle,
-  ArrowRight,
-  Bell,
-  CheckCircle2,
-  type LucideIcon,
-  Server,
-  ShieldCheck,
-  XCircle,
-  Zap,
-} from 'lucide-react';
+import { ArrowRight, Bell, Bot, type LucideIcon, Monitor, Server, ShieldAlert } from 'lucide-react';
+
+export type EventType = 'Server' | 'Incident' | 'ActionBook' | 'System';
 
 export interface TimelineEvent {
   id: string;
-  type: 'alert' | 'deployment' | 'recovery' | 'failure' | 'scaling' | 'security';
-  message: string;
+  type: EventType;
+  title: string;
+  description?: string;
   timestamp: string;
-  source: string;
 }
 
 interface RecentEventsTimelineProps {
@@ -29,16 +23,36 @@ interface RecentEventsTimelineProps {
   className?: string;
 }
 
-const eventTypeConfig: Record<TimelineEvent['type'], { icon: LucideIcon; color: string; bgColor: string }> = {
-  alert: { icon: AlertTriangle, color: 'text-amber-500', bgColor: 'bg-amber-500/10' },
-  deployment: { icon: Zap, color: 'text-blue-500', bgColor: 'bg-blue-500/10' },
-  recovery: { icon: CheckCircle2, color: 'text-emerald-500', bgColor: 'bg-emerald-500/10' },
-  failure: { icon: XCircle, color: 'text-red-500', bgColor: 'bg-red-500/10' },
-  scaling: { icon: Server, color: 'text-violet-500', bgColor: 'bg-violet-500/10' },
-  security: { icon: ShieldCheck, color: 'text-cyan-500', bgColor: 'bg-cyan-500/10' },
+const eventTypeConfig: Record<EventType, { icon: LucideIcon; color: string; bgColor: string; badgeClass: string }> = {
+  Server: {
+    icon: Server,
+    color: 'text-blue-500',
+    bgColor: 'bg-blue-500/10',
+    badgeClass: 'bg-blue-100 text-blue-700 border-blue-200',
+  },
+  Incident: {
+    icon: ShieldAlert,
+    color: 'text-red-500',
+    bgColor: 'bg-red-500/10',
+    badgeClass: 'bg-red-100 text-red-700 border-red-200',
+  },
+  ActionBook: {
+    icon: Bot,
+    color: 'text-violet-500',
+    bgColor: 'bg-violet-500/10',
+    badgeClass: 'bg-violet-100 text-violet-700 border-violet-200',
+  },
+  System: {
+    icon: Monitor,
+    color: 'text-slate-500',
+    bgColor: 'bg-slate-500/10',
+    badgeClass: 'bg-slate-100 text-slate-700 border-slate-200',
+  },
 };
 
 export function RecentEventsTimeline({ events, className }: RecentEventsTimelineProps) {
+  const displayEvents = events.slice(0, 5);
+
   return (
     <Card className={cn('h-full', className)}>
       <CardHeader className='pb-2'>
@@ -54,9 +68,13 @@ export function RecentEventsTimeline({ events, className }: RecentEventsTimeline
       </CardHeader>
       <CardContent>
         <div className='space-y-0.5'>
-          {events.map((event, index) => (
-            <TimelineItem key={event.id} event={event} isLast={index === events.length - 1} />
-          ))}
+          {displayEvents.length === 0 ? (
+            <div className='flex items-center justify-center py-8 text-sm text-muted-foreground'>No recent events</div>
+          ) : (
+            displayEvents.map((event, index) => (
+              <TimelineItem key={event.id} event={event} isLast={index === displayEvents.length - 1} />
+            ))
+          )}
         </div>
       </CardContent>
     </Card>
@@ -76,67 +94,54 @@ function TimelineItem({ event, isLast }: { event: TimelineEvent; isLast: boolean
         {!isLast && <div className='flex-1 w-px bg-border mt-1' />}
       </div>
       <div className='flex-1 min-w-0 pb-2'>
-        <p className='text-sm leading-snug'>{event.message}</p>
-        <div className='flex items-center gap-2 mt-1'>
-          <span className='text-[11px] text-muted-foreground'>{event.source}</span>
-          <span className='text-[11px] text-muted-foreground/60'>&middot;</span>
-          <span className='text-[11px] text-muted-foreground'>{event.timestamp}</span>
+        <div className='flex items-center gap-2'>
+          <p className='text-sm leading-snug truncate'>{event.title}</p>
+          <Badge variant='outline' className={cn('text-[10px] px-1.5 h-4 shrink-0', config.badgeClass)}>
+            {event.type}
+          </Badge>
         </div>
+        {event.description && <p className='text-xs text-muted-foreground mt-0.5 truncate'>{event.description}</p>}
+        <span className='text-[11px] text-muted-foreground mt-1 block'>{event.timestamp}</span>
       </div>
     </div>
   );
 }
 
+/** 기본 mock 데이터 생성 */
 export function getDefaultTimelineEvents(): TimelineEvent[] {
   return [
     {
       id: 'evt-001',
-      type: 'failure',
-      message: 'Connection timeout on prod-db-primary',
+      type: 'Incident',
+      title: 'Connection timeout on prod-db-primary',
+      description: 'PostgreSQL primary node connection timeout detected',
       timestamp: '5 min ago',
-      source: 'PostgreSQL',
     },
     {
       id: 'evt-002',
-      type: 'alert',
-      message: 'CPU usage exceeded 90% threshold on api-server-03',
+      type: 'Server',
+      title: 'CPU usage exceeded 90% threshold on api-server-03',
       timestamp: '12 min ago',
-      source: 'Infrastructure',
     },
     {
       id: 'evt-003',
-      type: 'deployment',
-      message: 'Deployment v2.14.3 completed successfully',
+      type: 'ActionBook',
+      title: 'Auto-restart executed on redis-cache-02',
+      description: 'ActionBook: cache-service-restart completed successfully',
       timestamp: '25 min ago',
-      source: 'CI/CD Pipeline',
     },
     {
       id: 'evt-004',
-      type: 'recovery',
-      message: 'Service redis-cache-02 recovered automatically',
+      type: 'System',
+      title: 'Scheduled maintenance window started',
+      description: 'Maintenance window: 02:00-04:00 UTC',
       timestamp: '42 min ago',
-      source: 'ActionBook',
     },
     {
       id: 'evt-005',
-      type: 'scaling',
-      message: 'Auto-scaling triggered: worker pool 4 → 6 instances',
+      type: 'Server',
+      title: 'Auto-scaling triggered: worker pool 4 → 6 instances',
       timestamp: '1 hour ago',
-      source: 'Kubernetes',
-    },
-    {
-      id: 'evt-006',
-      type: 'security',
-      message: 'Security scan completed: 0 vulnerabilities found',
-      timestamp: '1.5 hours ago',
-      source: 'Security Scanner',
-    },
-    {
-      id: 'evt-007',
-      type: 'alert',
-      message: 'Disk usage warning on storage-node-01 (85%)',
-      timestamp: '2 hours ago',
-      source: 'Infrastructure',
     },
   ];
 }

@@ -1,5 +1,5 @@
 import { cn } from '@/shared/lib/utils';
-import React, { isValidElement, useEffect, useId } from 'react';
+import React, { isValidElement, useEffect, useId, useMemo } from 'react';
 
 import { useColumnRegistry } from './hooks/use-column-registry';
 import { defaultSortingFn } from './utils/sorting';
@@ -71,7 +71,7 @@ export function Column<TData extends object>({
 }: ColumnProps<TData>) {
   const columnId = id ?? accessorKey.toString();
   const { registerColumn, unregisterColumn, getColumnSequence } = useColumnRegistry<TData>();
-  const sequence = getColumnSequence();
+  const sequence = useMemo(() => getColumnSequence(), [getColumnSequence]);
   const justifyContent = alignToJustifyContent[align];
   const textAlign = alignToTextAlign[align];
 
@@ -96,8 +96,8 @@ export function Column<TData extends object>({
         },
         header: () =>
           typeof header === 'string' ? (
-            <div className={cn('flex w-full items-center py-1 px-2', justifyContent)}>
-              <span className='truncate text-xs font-bold'>{header}</span>
+            <div className={cn('flex w-full items-center py-3.5 px-4', justifyContent)}>
+              <span className='truncate text-sm font-semibold'>{header}</span>
             </div>
           ) : (
             header
@@ -108,16 +108,16 @@ export function Column<TData extends object>({
 
               if (isStringifiablePrimitive(result)) {
                 return (
-                  <div className={cn('flex w-full items-center py-1 px-2', justifyContent)}>
-                    <span className={cn('truncate text-sm', textAlign)}>{result.toString()}</span>
+                  <div className={cn('flex w-full items-center py-3.5 px-4', justifyContent)}>
+                    <span className={cn('truncate text-sm font-medium', textAlign)}>{result.toString()}</span>
                   </div>
                 );
               }
-              return result;
+              return <div className={cn('flex w-full items-center py-3.5 px-4', justifyContent)}>{result}</div>;
             }
           : ({ getValue }) => (
-              <div className={cn('flex w-full items-center py-1 px-2', justifyContent)}>
-                <span className={cn('truncate text-sm', textAlign)}>{String(getValue() ?? '')}</span>
+              <div className={cn('flex w-full items-center py-3.5 px-4', justifyContent)}>
+                <span className={cn('truncate text-sm font-medium', textAlign)}>{String(getValue() ?? '')}</span>
               </div>
             ),
       },
@@ -162,7 +162,7 @@ export function ColumnGroup<TData extends object>({
   const autoId = useId();
   const groupId = id || autoId; // id가 주어지면 사용, 없으면 자동 생성
   const { registerGroup, unregisterGroup, getColumnSequence } = useColumnRegistry<TData>();
-  const sequence = getColumnSequence(); // Column과 동일하게 매 렌더마다 시퀀스 할당 → JSX 순서 보장
+  const sequence = useMemo(() => getColumnSequence(), [getColumnSequence]);
 
   useEffect(() => {
     registerGroup(
@@ -170,8 +170,8 @@ export function ColumnGroup<TData extends object>({
         id: groupId,
         header: () =>
           typeof header === 'string' ? (
-            <div className='flex w-full justify-center items-center py-1 px-2'>
-              <span className='truncate text-xs font-bold'>{header}</span>
+            <div className='flex w-full justify-center items-center py-3.5 px-4'>
+              <span className='truncate text-sm font-semibold'>{header}</span>
             </div>
           ) : (
             header

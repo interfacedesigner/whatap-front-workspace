@@ -5,6 +5,9 @@
 
 // Types
 export type {
+  CreateRolePayload,
+  EffectivePermission,
+  InviteMemberPayload,
   Member,
   MemberStatus,
   Permission,
@@ -13,28 +16,45 @@ export type {
   PermissionScope,
   Policy,
   Role,
+  RoleImpact,
+  RoleType,
+  UpdateRolePayload,
 } from './model/management.types';
 
 // Constants
-export { MEMBER_STATUS_CONFIG } from './model/management.types';
+export { MEMBER_STATUS_CONFIG, ROLE_TYPE_CONFIG } from './model/management.types';
 
 // Mock Data & Queries
 export {
+  addMember,
+  addPolicyToMember,
+  addRole,
+  deleteMember,
+  deleteRole,
   formatDate,
   formatDateTime,
   getAllMembers,
   getAllPermissions,
   getAllPolicies,
   getAllRoles,
+  getMemberByEmail,
   getMemberById,
   getMembersByPolicyId,
   getMembersByRoleId,
   getPermissionById,
+  getPermissionsByMemberId,
   getPermissionsByRoleId,
   getPoliciesByMemberId,
   getPoliciesByRoleId,
   getPolicyById,
   getRoleById,
+  getRoleImpact,
+  getRoleNamesByMemberId,
   getRolesByMemberId,
   getRolesByPolicyId,
+  getUnassignedPolicies,
+  isRoleNameDuplicate,
+  removePolicyFromMember,
+  updateMember,
+  updateRole,
 } from './api/management.mock';
