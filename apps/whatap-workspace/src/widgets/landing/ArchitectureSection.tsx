@@ -191,12 +191,11 @@ function PipelineCard({ node, index, isActive }: { node: PipelineNode; index: nu
 
       {/* Icon container */}
       <motion.div
-        className='relative z-10 flex items-center justify-center rounded-xl border backdrop-blur-sm'
+        className='relative z-10 flex items-center justify-center rounded-xl backdrop-blur-sm'
         style={{
           width: 64,
           height: 64,
           color: `var(${node.colorVar})`,
-          borderColor: `color-mix(in srgb, var(${node.colorVar}) 25%, transparent)`,
           backgroundColor: `color-mix(in srgb, var(${node.colorVar}) 8%, transparent)`,
         }}
         animate={isActive ? { scale: [1, 1.06, 1] } : { scale: 1 }}
@@ -238,10 +237,9 @@ function OutputBadge({ node, delay }: { node: OutputNode; delay: number }) {
       whileInView={{ opacity: 1, x: 0 }}
       viewport={{ once: true }}
       transition={{ duration: 0.4, delay }}
-      className='flex items-center gap-2 px-3 py-1.5 rounded-md border backdrop-blur-sm'
+      className='flex items-center gap-2 px-3 py-1.5 rounded-md backdrop-blur-sm'
       style={{
         color: `var(${node.colorVar})`,
-        borderColor: `color-mix(in srgb, var(${node.colorVar}) 20%, transparent)`,
         backgroundColor: `color-mix(in srgb, var(${node.colorVar}) 6%, transparent)`,
       }}
     >
@@ -335,10 +333,7 @@ function ArchitectureDiagram() {
   }, [isInView]);
 
   return (
-    <div
-      ref={containerRef}
-      className='relative rounded-xl overflow-hidden border border-border/20 bg-card/5 backdrop-blur-sm'
-    >
+    <div ref={containerRef} className='relative rounded-xl overflow-hidden bg-card/5 backdrop-blur-sm'>
       {/* Ambient glow */}
       <div
         className='absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[70%] h-[60%] rounded-full pointer-events-none'

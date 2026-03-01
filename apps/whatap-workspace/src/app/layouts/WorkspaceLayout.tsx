@@ -1,4 +1,5 @@
 import { useAuth } from '@/features/auth';
+import { workspaceSetupAtom } from '@/features/onboarding';
 import { Avatar, AvatarFallback } from '@/shared/components/ui/avatar';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/shared/components/ui/collapsible';
 import {
@@ -14,7 +15,6 @@ import {
   SidebarFooter,
   SidebarGroup,
   SidebarHeader,
-  SidebarInput,
   SidebarInset,
   SidebarMenu,
   SidebarMenuButton,
@@ -29,14 +29,16 @@ import {
 } from '@/shared/components/ui/sidebar';
 import { OnboardingSidebarWidget } from '@/widgets/onboarding';
 import { Link, useMatchRoute, useNavigate, useParams } from '@tanstack/react-router';
+import { useAtomValue } from 'jotai';
 import {
   ChevronDown,
   ChevronRight,
+  ChevronsUpDown,
   FileText,
   Home,
   LogOut,
   type LucideIcon,
-  Search,
+  Plus,
   Server,
   Settings,
   ShieldCheck,
@@ -64,8 +66,10 @@ interface NavGroup {
 export function WorkspaceLayout({ children }: WorkspaceLayoutProps) {
   const { wsid } = useParams({ strict: false }) as { wsid?: string };
   const matchRoute = useMatchRoute();
+  const workspaceSetup = useAtomValue(workspaceSetupAtom);
 
   const wsBase = `/ws/${wsid ?? ''}`;
+  const workspaceName = workspaceSetup.name || 'My Workspace';
 
   const navGroups: NavGroup[] = useMemo(
     () => [
@@ -73,7 +77,7 @@ export function WorkspaceLayout({ children }: WorkspaceLayoutProps) {
         title: 'Workspace',
         items: [
           {
-            label: 'Workspace',
+            label: 'Infrastructure',
             icon: Server,
             href: wsBase,
             children: [{ label: 'Server Inventories', href: `${wsBase}/server/inventory-map` }],
@@ -117,34 +121,42 @@ export function WorkspaceLayout({ children }: WorkspaceLayoutProps) {
         collapsible='icon'
         className='border-r bg-[#EFF6FF] dark:bg-slate-950 [&_[data-sidebar=sidebar]]:bg-[#EFF6FF] dark:[&_[data-sidebar=sidebar]]:bg-slate-950 [&_[data-sidebar=inner]]:bg-[#EFF6FF] dark:[&_[data-sidebar=inner]]:bg-slate-950'
       >
-        {/* Header: Logo + Search (Figma: Header section) */}
-        <SidebarHeader className='gap-3 p-3'>
+        {/* Header: Workspace Switcher Dropdown */}
+        <SidebarHeader className='p-3'>
           <SidebarMenu>
             <SidebarMenuItem>
-              <SidebarMenuButton size='lg' asChild className='hover:bg-blue-100/60 dark:hover:bg-blue-900/30'>
-                <Link to={wsBase}>
-                  <div className='bg-[#1E3A8A] text-white flex items-center justify-center rounded-lg size-8 shrink-0'>
-                    <span className='font-bold text-sm'>O</span>
-                  </div>
-                  <div className='flex flex-col gap-0.5 leading-none'>
-                    <span className='font-semibold text-sm'>OpsGent</span>
-                    <span className='text-[11px] text-zinc-500'>v1.0.0</span>
-                  </div>
-                </Link>
-              </SidebarMenuButton>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <SidebarMenuButton
+                    size='lg'
+                    className='hover:bg-blue-100/60 dark:hover:bg-blue-900/30 data-[state=open]:bg-blue-100/60 dark:data-[state=open]:bg-blue-900/30'
+                  >
+                    <div className='bg-[#1E3A8A] text-white flex items-center justify-center rounded-lg size-8 shrink-0'>
+                      <span className='font-bold text-sm'>O</span>
+                    </div>
+                    <div className='flex flex-col gap-0.5 leading-none min-w-0'>
+                      <span className='font-semibold text-sm truncate'>OpsGent</span>
+                      <span className='text-[11px] text-zinc-500 dark:text-zinc-400'>{workspaceName}</span>
+                    </div>
+                    <ChevronsUpDown className='ml-auto size-4 text-zinc-400 shrink-0' />
+                  </SidebarMenuButton>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent side='bottom' align='start' className='w-[--radix-dropdown-menu-trigger-width]'>
+                  <DropdownMenuItem className='gap-2'>
+                    <div className='bg-[#1E3A8A] text-white flex items-center justify-center rounded size-6 shrink-0'>
+                      <span className='font-bold text-xs'>{workspaceName.charAt(0).toUpperCase()}</span>
+                    </div>
+                    <span className='font-medium'>{workspaceName}</span>
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem className='gap-2 text-zinc-500'>
+                    <Plus className='size-4' />
+                    <span>Create Workspace</span>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             </SidebarMenuItem>
           </SidebarMenu>
-
-          {/* Search Input (Figma: Input component with border) */}
-          <div className='group-data-[collapsible=icon]:hidden'>
-            <div className='relative'>
-              <Search className='pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 size-4 text-zinc-400' />
-              <SidebarInput
-                placeholder='Search...'
-                className='h-9 pl-9 bg-white dark:bg-slate-900 border-zinc-200 dark:border-zinc-700'
-              />
-            </div>
-          </div>
         </SidebarHeader>
 
         <SidebarContent className='gap-0'>

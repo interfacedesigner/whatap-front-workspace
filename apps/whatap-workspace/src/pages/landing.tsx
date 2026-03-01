@@ -5,7 +5,6 @@ import {
   Footer,
   HeroSection,
   Navbar,
-  SocialProofSection,
   WorkflowSection,
 } from '@/widgets/landing';
 import { createFileRoute } from '@tanstack/react-router';
@@ -59,11 +58,6 @@ function LandingPage() {
       {/* ── 2. LIGHT: Features ── */}
       <div className='bg-background text-foreground'>
         <FeaturesSection />
-      </div>
-
-      {/* ── 2.5. LIGHT: Social Proof ── */}
-      <div className='bg-background text-foreground'>
-        <SocialProofSection />
       </div>
 
       {/* ── 3. DARK: Architecture ── */}
