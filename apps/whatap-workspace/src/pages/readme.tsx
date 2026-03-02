@@ -12,7 +12,7 @@ import { createFileRoute, useNavigate } from '@tanstack/react-router';
 import { ArrowRight, Check, Copy, KeyRound, Shield, Users } from 'lucide-react';
 import { useCallback, useMemo, useState } from 'react';
 
-export const Route = createFileRoute('/signup/dev')({
+export const Route = createFileRoute('/readme')({
   component: DevPage,
 });
 
@@ -249,6 +249,61 @@ function DevPage() {
           {TEST_SCENARIOS.map((entry) => (
             <ScenarioCard key={entry.scenario.type} entry={entry} onSelect={() => handleSelect(entry)} />
           ))}
+        </div>
+
+        {/* ─── Login Test Accounts Section ─── */}
+        <div className='mt-12'>
+          <div className='flex items-center gap-3 mb-4'>
+            <div className='h-px flex-1 bg-zinc-200' />
+            <span className='text-xs font-medium text-zinc-400 uppercase tracking-wider'>Login Test Accounts</span>
+            <div className='h-px flex-1 bg-zinc-200' />
+          </div>
+          <p className='text-sm text-zinc-500 mb-5 text-center'>
+            로그인 페이지(<code className='text-xs bg-zinc-100 px-1.5 py-0.5 rounded font-mono'>/login</code>)에서 아래
+            이메일로 로그인할 수 있습니다. 비밀번호는 아무 값이나 입력하세요.
+          </p>
+
+          <div className='flex flex-col gap-3'>
+            <div className='border border-zinc-200 rounded-lg bg-white px-5 py-4'>
+              <div className='flex items-center justify-between'>
+                <div className='flex items-center gap-3'>
+                  <div className='w-9 h-9 rounded-lg bg-emerald-500 flex items-center justify-center'>
+                    <Users className='w-4.5 h-4.5 text-white' />
+                  </div>
+                  <div>
+                    <h3 className='text-sm font-semibold text-zinc-900'>Existing User</h3>
+                    <p className='text-xs text-zinc-500 mt-0.5'>워크스페이스 보유 → Overview 페이지로 이동</p>
+                  </div>
+                </div>
+                <span className='text-[10px] font-medium text-emerald-600 bg-emerald-50 px-2 py-1 rounded'>
+                  HAS WORKSPACE
+                </span>
+              </div>
+              <div className='flex items-center gap-1.5 mt-3 ml-12'>
+                <code className='font-mono text-[11px] bg-zinc-100 px-1.5 py-0.5 rounded'>existed-user@whatap.io</code>
+                <CopyButton text='existed-user@whatap.io' />
+              </div>
+            </div>
+
+            <div className='border border-zinc-200 rounded-lg bg-white px-5 py-4'>
+              <div className='flex items-center justify-between'>
+                <div className='flex items-center gap-3'>
+                  <div className='w-9 h-9 rounded-lg bg-blue-500 flex items-center justify-center'>
+                    <Users className='w-4.5 h-4.5 text-white' />
+                  </div>
+                  <div>
+                    <h3 className='text-sm font-semibold text-zinc-900'>Onboarding User</h3>
+                    <p className='text-xs text-zinc-500 mt-0.5'>워크스페이스 없음 → 온보딩 플로우로 이동</p>
+                  </div>
+                </div>
+                <span className='text-[10px] font-medium text-blue-600 bg-blue-50 px-2 py-1 rounded'>NEW USER</span>
+              </div>
+              <div className='flex items-center gap-1.5 mt-3 ml-12'>
+                <code className='font-mono text-[11px] bg-zinc-100 px-1.5 py-0.5 rounded'>onboarding@whatap.io</code>
+                <CopyButton text='onboarding@whatap.io' />
+              </div>
+            </div>
+          </div>
         </div>
 
         {/* ─── RBAC Test Accounts Section ─── */}

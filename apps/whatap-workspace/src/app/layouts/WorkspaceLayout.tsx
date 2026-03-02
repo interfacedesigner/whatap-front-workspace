@@ -1,5 +1,5 @@
 import { useAuth } from '@/features/auth';
-import { workspaceSetupAtom } from '@/features/onboarding';
+// import { workspaceSetupAtom } from '@/features/onboarding';
 import { Avatar, AvatarFallback } from '@/shared/components/ui/avatar';
 import { Button } from '@/shared/components/ui/button';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/shared/components/ui/collapsible';
@@ -33,7 +33,7 @@ import {
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/shared/components/ui/tooltip';
 import { OnboardingSidebarWidget } from '@/widgets/onboarding';
 import { Link, useMatchRoute, useNavigate, useParams } from '@tanstack/react-router';
-import { useAtomValue } from 'jotai';
+// import { useAtomValue } from 'jotai';
 import {
   AlertCircle,
   Bell,
@@ -65,8 +65,6 @@ interface WorkspaceLayoutProps {
 export function WorkspaceLayout({ children }: WorkspaceLayoutProps) {
   const { wsid } = useParams({ strict: false }) as { wsid?: string };
   const matchRoute = useMatchRoute();
-  const workspaceSetup = useAtomValue(workspaceSetupAtom);
-
   const wsBase = `/ws/${wsid ?? ''}`;
   const workspaceName = 'Workspace';
 
@@ -305,7 +303,7 @@ function WorkspaceNavItem({
                   <SidebarMenuSub>
                     <SidebarMenuSubItem>
                       <SidebarMenuSubButton asChild isActive={isActive(`${wsBase}/server/inventory-map`)}>
-                        <Link to={`${wsBase}/server/inventory-map`}>
+                        <Link to={`${wsBase}/server/inventory-map` as string}>
                           <span>Server Inventory Map</span>
                         </Link>
                       </SidebarMenuSubButton>

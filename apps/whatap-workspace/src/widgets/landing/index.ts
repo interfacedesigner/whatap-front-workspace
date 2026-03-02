@@ -5,4 +5,4 @@ export { default as SocialProofSection } from './SocialProofSection';
 export { default as ArchitectureSection } from './ArchitectureSection';
 export { default as WorkflowSection } from './WorkflowSection';
 export { default as CTASection } from './CTASection';
-export { default as Footer } from './Footer';
+export { default as Footer } from './footer';

@@ -14,55 +14,38 @@ export interface LoginResponse {
 const API_BASE_URL = import.meta.env.VITE_API_URL || '/api';
 
 export async function loginApi(credentials: LoginCredentials): Promise<LoginResponse> {
-  // Development mock for Google OAuth
-  if (credentials.email === 'google-user@gmail.com' && credentials.password === 'google-oauth-mock') {
-    await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulate network delay
-    return {
-      user: {
-        id: 'google-user-123',
-        email: 'google-user@gmail.com',
-        name: 'Google User',
-      },
-      token: 'mock-google-oauth-token',
-    };
-  }
-
-  // Development mock for regular login (when API is not available)
+  // Development mock (when API is not available)
   if (import.meta.env.DEV) {
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    // Mock successful login for testing
+    await new Promise((resolve) => setTimeout(resolve, 800));
+
     if (credentials.email && credentials.password) {
-      // 기존 회원: workspace가 이미 존재하는 사용자
+      // ① 기존 사용자: workspace 보유 → Overview로 이동
       if (credentials.email === 'existed-user@whatap.io') {
         return {
           user: {
             id: 'existed-user-001',
             email: 'existed-user@whatap.io',
-            name: 'WhaTap User',
+            name: 'Existing User',
           },
           token: 'mock-existed-user-token',
           workspaceId: 'ws-default-001',
         };
       }
-      // 온보딩 사용자: workspace 미생성 → 온보딩으로 라우팅
-      const onboardingEmails = [
-        'onboarding@whatap.io',
-        'onboarding-01@whatap.io',
-        'onboarding-02@whatap.io',
-        'onboarding-03@whatap.io',
-      ];
-      if (onboardingEmails.includes(credentials.email)) {
-        const idx = onboardingEmails.indexOf(credentials.email);
+
+      // ② 온보딩 사용자: workspace 미생성 → 온보딩 플로우로 이동
+      if (credentials.email === 'onboarding@whatap.io') {
         return {
           user: {
-            id: `onboarding-user-${String(idx + 1).padStart(3, '0')}`,
-            email: credentials.email,
-            name: `Onboarding User ${idx + 1}`,
+            id: 'onboarding-user-001',
+            email: 'onboarding@whatap.io',
+            name: 'Onboarding User',
           },
-          token: `mock-onboarding-token-${idx + 1}`,
+          token: 'mock-onboarding-token',
           // workspaceId 없음 → 온보딩 진행 필요
         };
       }
+
+      // ③ 기타 이메일: 기존 사용자로 처리 (dev 편의)
       return {
         user: {
           id: 'dev-user-123',
@@ -70,6 +53,7 @@ export async function loginApi(credentials: LoginCredentials): Promise<LoginResp
           name: credentials.email.split('@')[0] ?? '',
         },
         token: 'mock-dev-token',
+        workspaceId: 'ws-default-001',
       };
     }
   }
