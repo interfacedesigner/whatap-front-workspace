@@ -20,7 +20,7 @@ export function PolicyDetailHeader({ policy, wsid }: PolicyDetailHeaderProps) {
         </Button>
       </Link>
       <Card>
-        <CardContent className='pt-6'>
+        <CardContent>
           <div className='space-y-2'>
             <h2 className='text-xl font-semibold'>{policy.name}</h2>
             <div className='flex flex-wrap gap-x-6 gap-y-1 text-sm text-muted-foreground'>

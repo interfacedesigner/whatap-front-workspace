@@ -77,7 +77,7 @@ export function MemberDetailHeader({
       </Breadcrumb>
 
       <Card>
-        <CardContent className='pt-6'>
+        <CardContent>
           <div className='flex items-start gap-4'>
             <Avatar className='h-14 w-14'>
               <AvatarFallback className='text-lg'>{member.name.charAt(0)}</AvatarFallback>

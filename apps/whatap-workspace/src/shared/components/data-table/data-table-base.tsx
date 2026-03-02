@@ -68,6 +68,8 @@ export interface DataTableBaseProps<TData extends object> {
   enableExpanding?: boolean;
   enableColumnPinning?: boolean;
   disableStickyHeader?: boolean;
+  /** thead를 고정하고 tbody 영역에서만 스크롤바를 표시합니다. */
+  scrollableBody?: boolean;
   onRowSelectionChange?: OnChangeFn<RowSelectionState>;
   onSortingChange?: OnChangeFn<SortingState>;
   onColumnSizingChange?: OnChangeFn<ColumnSizingState>;
@@ -109,6 +111,7 @@ export function DataTableBase<TData extends object>({
   onColumnSizingChange,
   onColumnPinningChange,
   disableStickyHeader = false,
+  scrollableBody = false,
   onRowClick,
   scrollToRowId,
   scrollToRowIdAlign = 'start',
@@ -220,22 +223,126 @@ export function DataTableBase<TData extends object>({
   // colgroup: 각 컬럼 폭을 테이블 컨테이너 대비 비율(%)로 정의
   const visibleLeafColumns = table.getVisibleLeafColumns();
 
+  // 공통 colgroup 렌더링 함수
+  const renderColgroup = () => (
+    <colgroup>
+      {visibleLeafColumns.map((column) => (
+        <col
+          key={column.id}
+          style={{
+            width: `calc(var(--col-${sanitizeCssVarToken(column.id)}-size) / var(--table-total-size) * 100%)`,
+          }}
+        />
+      ))}
+    </colgroup>
+  );
+
+  // 공통 헤더 렌더링
+  const headerStateForRerender = [
+    table.getState().sorting,
+    table.getState().expanded,
+    table.getState().rowSelection,
+    table.getState().columnPinning,
+    table.getState().columnOrder,
+    table.getState().columnVisibility,
+    columns,
+  ];
+
+  const renderTheadContent = () =>
+    renderHeader
+      ? renderHeader(table.getHeaderGroups(), table)
+      : table
+          .getHeaderGroups()
+          .map((headerGroup) => (
+            <MemoizedDataTableHeaderRow
+              key={headerGroup.id}
+              headerGroup={headerGroup}
+              enableSorting={enableSorting}
+              enableMultiSort={enableMultiSort}
+              tableStateForRerenderOnly={headerStateForRerender}
+            />
+          ));
+
+  // 공통 바디 렌더링
+  const bodyStateForRerender = [
+    columns,
+    table.getState().sorting,
+    table.getState().rowSelection,
+    table.getState().expanded,
+    table.getState().columnPinning,
+    table.getState().columnOrder,
+    table.getState().columnVisibility,
+    data,
+  ];
+
+  const renderTbodyContent = () => (
+    <>
+      <tr style={{ height: virtualRowsPaddingTop }} />
+      {renderBody
+        ? renderBody(indexedVirtualRows, table)
+        : (() => {
+            if (isLoading) {
+              return renderLoading ? renderLoading() : <LoadingPlaceholder />;
+            }
+
+            if (data.length === 0) {
+              return renderNoData ? renderNoData() : <EmptyPlaceholder />;
+            }
+
+            return indexedVirtualRows.map((row, index) => (
+              <MemoizedDataTableRow
+                key={row.id}
+                row={row}
+                virtualRowRef={virtualRowRef}
+                {...(renderExpandedRow != null && { renderExpandedRow })}
+                {...(renderRow != null && { renderRow })}
+                tableStateForRerenderOnly={bodyStateForRerender}
+                {...(onRowClick != null && { onRowClick: (row: TData) => onRowClick(row, index) })}
+              />
+            ));
+          })()}
+      <tr style={{ height: virtualRowsPaddingBottom }} />
+    </>
+  );
+
+  // scrollableBody 모드: 헤더/바디 테이블 분리, 스크롤바는 바디 영역에서만 표시
+  if (scrollableBody) {
+    return (
+      <div className={cn('flex flex-col h-full', tableClassName)} style={columnSizeVars}>
+        {/* 고정 헤더 */}
+        <div className='shrink-0 overflow-hidden border-b' style={{ scrollbarGutter: 'stable' }}>
+          <table className='w-full table-fixed'>
+            {renderColgroup()}
+            <thead className={cn('w-full bg-background', headerClassName)}>{renderTheadContent()}</thead>
+          </table>
+        </div>
+        {/* 스크롤 가능한 바디 */}
+        <div
+          ref={virtualScrollContainerRef}
+          className='flex-1 min-h-0 overflow-y-auto'
+          style={{ scrollbarGutter: 'stable' }}
+        >
+          <table className='w-full table-fixed'>
+            {renderColgroup()}
+            <tbody className={cn('w-full', bodyClassName)}>{renderTbodyContent()}</tbody>
+          </table>
+        </div>
+        {renderFooter != null && <div className={cn('w-full', footerClassName)}>{renderFooter(table)}</div>}
+        {caption != null && (
+          <div className={cn('mt-4 text-sm font-normal text-muted-foreground', captionClassName)}>{caption}</div>
+        )}
+      </div>
+    );
+  }
+
+  // 기본 모드: 단일 테이블 (기존 동작)
   return (
     <table
       ref={virtualScrollContainerRef as React.RefObject<HTMLTableElement>}
       className={cn('w-full overflow-auto table-fixed', tableClassName)}
       style={columnSizeVars}
     >
-      <colgroup>
-        {visibleLeafColumns.map((column) => (
-          <col
-            key={column.id}
-            style={{
-              width: `calc(var(--col-${sanitizeCssVarToken(column.id)}-size) / var(--table-total-size) * 100%)`,
-            }}
-          />
-        ))}
-      </colgroup>
+      {renderColgroup()}
       <thead
         className={cn('w-full bg-background', headerClassName)}
         style={{
@@ -248,66 +355,9 @@ export function DataTableBase<TData extends object>({
               }),
         }}
       >
-        {renderHeader
-          ? renderHeader(table.getHeaderGroups(), table)
-          : table.getHeaderGroups().map((headerGroup) => {
-              return (
-                <MemoizedDataTableHeaderRow
-                  key={headerGroup.id}
-                  headerGroup={headerGroup}
-                  enableSorting={enableSorting}
-                  enableMultiSort={enableMultiSort}
-                  tableStateForRerenderOnly={[
-                    table.getState().sorting,
-                    table.getState().expanded,
-                    table.getState().rowSelection,
-                    table.getState().columnPinning,
-                    table.getState().columnOrder,
-                    table.getState().columnVisibility,
-                    columns,
-                  ]}
-                />
-              );
-            })}
+        {renderTheadContent()}
       </thead>
-      <tbody className={cn('w-full', bodyClassName)}>
-        <tr style={{ height: virtualRowsPaddingTop }} />
-        {renderBody
-          ? renderBody(indexedVirtualRows, table)
-          : (() => {
-              if (isLoading) {
-                return renderLoading ? renderLoading() : <LoadingPlaceholder />;
-              }
-
-              if (data.length === 0) {
-                return renderNoData ? renderNoData() : <EmptyPlaceholder />;
-              }
-
-              // indexedVirtualRows 는 scroll 시 즉시 레퍼런스가 변경되므로.. row 에 memoization 합니다.
-              // TODO: 추후 메모 최적화 필요 (테이블 전체 혹은 TableBody 전체에 memo 적용 필요)
-              return indexedVirtualRows.map((row, index) => (
-                <MemoizedDataTableRow
-                  key={row.id}
-                  row={row}
-                  virtualRowRef={virtualRowRef}
-                  {...(renderExpandedRow != null && { renderExpandedRow })}
-                  {...(renderRow != null && { renderRow })}
-                  tableStateForRerenderOnly={[
-                    columns,
-                    table.getState().sorting,
-                    table.getState().rowSelection,
-                    table.getState().expanded,
-                    table.getState().columnPinning,
-                    table.getState().columnOrder,
-                    table.getState().columnVisibility,
-                    data,
-                  ]}
-                  {...(onRowClick != null && { onRowClick: (row: TData) => onRowClick(row, index) })}
-                />
-              ));
-            })()}
-        <tr style={{ height: virtualRowsPaddingBottom }} />
-      </tbody>
+      <tbody className={cn('w-full', bodyClassName)}>{renderTbodyContent()}</tbody>
       {renderFooter != null && (
         <tfoot className={cn('w-full bg-blue-50', footerClassName)}>{renderFooter(table)}</tfoot>
       )}

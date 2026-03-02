@@ -13,6 +13,10 @@ export type {
   ScrollAlign,
 } from './data-table.types';
 
+// Pagination
+export { TablePagination } from './table-pagination';
+export { useClientPagination } from './use-client-pagination';
+
 // Hooks
 export { useColumnRegistry } from './hooks/use-column-registry';
 export { useTableContext } from './hooks/use-table-context';

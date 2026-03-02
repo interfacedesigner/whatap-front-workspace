@@ -22,6 +22,9 @@ export interface DataTableProps<TData extends object> {
   enableMultiSort?: boolean;
   enableColumnPinning?: boolean;
   disableStickyHeader?: boolean;
+  /** thead를 고정하고 tbody 영역에서만 스크롤바를 표시합니다.
+   * 리스트 페이지처럼 뷰포트에 맞게 테이블 높이가 제한되는 경우 사용합니다. */
+  scrollableBody?: boolean;
   isLoading?: boolean;
   tableClassName?: string;
   headerClassName?: string;

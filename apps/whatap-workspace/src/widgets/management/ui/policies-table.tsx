@@ -16,6 +16,7 @@ export function PoliciesTable({ data, onRowClick }: PoliciesTableProps) {
         {...(onRowClick != null && { onRowClick })}
         enableSorting
         enableColumnResizing
+        scrollableBody
       >
         <SelectRowColumn<Policy> pinned='left' />
         <Column<Policy> header='Policy Name' accessorKey='name' size={220} align='left' />

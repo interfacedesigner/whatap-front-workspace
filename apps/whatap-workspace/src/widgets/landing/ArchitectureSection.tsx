@@ -700,7 +700,7 @@ function ActionBookDeepDive() {
 
           {/* Right: Code Example */}
           {activeFeature.codeExample && (
-            <div className='bg-card/5 border border-border/10 rounded-xl overflow-hidden backdrop-blur-sm'>
+            <div className='bg-card/5 border border-border/10 rounded-xl overflow-hidden backdrop-blur-sm flex flex-col'>
               {/* Code header */}
               <div
                 className='flex items-center gap-2 px-5 py-3'
@@ -721,8 +721,8 @@ function ActionBookDeepDive() {
                 </span>
               </div>
 
-              {/* Code content */}
-              <div className='p-6'>
+              {/* Code content — Fill Container: 남은 공간 채움 */}
+              <div className='p-6 flex-1 flex items-center'>
                 <pre
                   className='text-foreground overflow-x-auto'
                   style={{

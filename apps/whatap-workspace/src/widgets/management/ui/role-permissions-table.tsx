@@ -1,8 +1,14 @@
 import type { Permission, PermissionDomain } from '@/entities/management';
-import { Column, DataTable, SelectRowColumn } from '@/shared/components/data-table';
+import {
+  Column,
+  DataTable,
+  SelectRowColumn,
+  TablePagination,
+  useClientPagination,
+} from '@/shared/components/data-table';
 import { Badge } from '@/shared/components/ui/badge';
 import { Button } from '@/shared/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/shared/components/ui/card';
+import { Card, CardContent } from '@/shared/components/ui/card';
 import { Pencil, Save, X } from 'lucide-react';
 
 import { RolePermissionMatrix } from './role-permission-matrix';
@@ -33,11 +39,13 @@ export function RolePermissionsTable({
   onSavePermissions,
   onCancelEdit,
 }: RolePermissionsTableProps) {
+  const pagination = useClientPagination(permissions);
+
   return (
     <Card>
-      <CardHeader>
-        <div className='flex items-center justify-between'>
-          <CardTitle className='text-base'>Permissions ({permissions.length})</CardTitle>
+      <CardContent>
+        <div className='flex items-center justify-between mb-4'>
+          <h3 className='text-base font-medium'>Permissions ({permissions.length})</h3>
           {isEditable && !isEditing && onToggleEdit && (
             <Button variant='outline' size='sm' className='gap-1.5' onClick={onToggleEdit}>
               <Pencil className='h-3.5 w-3.5' />
@@ -57,8 +65,6 @@ export function RolePermissionsTable({
             </div>
           )}
         </div>
-      </CardHeader>
-      <CardContent>
         {isEditing && allPermissions && selectedPermissionIds && onPermissionToggle && onDomainToggleAll ? (
           <RolePermissionMatrix
             permissions={allPermissions}
@@ -69,8 +75,8 @@ export function RolePermissionsTable({
         ) : permissions.length === 0 ? (
           <p className='py-6 text-center text-sm text-muted-foreground'>No permissions assigned</p>
         ) : (
-          <div className='max-h-[360px] rounded-lg border overflow-hidden'>
-            <DataTable data={permissions} getRowId={(row) => row.id} enableSorting>
+          <div className='rounded-lg border overflow-hidden'>
+            <DataTable data={pagination.paginatedData} getRowId={(row) => row.id} enableSorting>
               <SelectRowColumn<Permission> pinned='left' />
               <Column<Permission> header='Permission' accessorKey='name' size={200} align='left' />
               <Column<Permission>
@@ -113,6 +119,7 @@ export function RolePermissionsTable({
               />
               <Column<Permission> header='Description' accessorKey='description' size={260} align='left' />
             </DataTable>
+            {pagination.showPagination && <TablePagination {...pagination} />}
           </div>
         )}
       </CardContent>

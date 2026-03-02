@@ -93,7 +93,7 @@ export function RoleDetailHeader({
       </Breadcrumb>
 
       <Card>
-        <CardContent className='pt-6'>
+        <CardContent>
           <div className='space-y-2'>
             {/* Name + Badges + Actions */}
             <div className='flex items-start justify-between'>

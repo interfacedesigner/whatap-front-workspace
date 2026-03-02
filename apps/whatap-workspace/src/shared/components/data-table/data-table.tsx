@@ -20,6 +20,7 @@ export function DataTable<TData extends object>({
   enableExpanding = false,
   enableRowSelection = false,
   disableStickyHeader = false,
+  scrollableBody = false,
   enableColumnResizing = true,
   enableSorting = true,
   enableMultiSort = true,
@@ -107,6 +108,7 @@ export function DataTable<TData extends object>({
               ...(columnVisibility != null && { columnVisibility }),
             }}
             disableStickyHeader={disableStickyHeader}
+            scrollableBody={scrollableBody}
             {...(enableColumnResizing != null && { enableColumnResizing })}
             {...(enableSorting != null && { enableSorting })}
             {...(enableMultiSort != null && { enableMultiSort })}

@@ -28,7 +28,7 @@ export const TEST_SCENARIOS: TestScenarioEntry[] = [
   },
   {
     label: 'Invited — Single Workspace',
-    description: '초대 링크를 통해 하나의 워크스페이스에 가입합니다. 이메일 읽기전용, Lead-info 프리필.',
+    description: 'Admin이 Operator를 단일 워크스페이스에 초대합니다. 이메일 읽기전용, Lead-info 프리필.',
     badge: 'Invited',
     badgeColor: 'bg-blue-50 text-[#1E3A8A]',
     flow: [
@@ -39,12 +39,12 @@ export const TEST_SCENARIOS: TestScenarioEntry[] = [
     ],
     scenario: {
       type: 'invited-single',
-      email: 'alex.kim@whatap.io',
+      email: 'operator@whatap.io',
       token: 'test-invite-single',
-      inviterName: 'Jay Park',
-      workspaces: [{ id: 'ws-1', name: 'WhaTap Production', role: 'SRE' }],
+      inviterName: 'Test Admin (admin@whatap.io)',
+      workspaces: [{ id: 'ws-1', name: 'OpsGent Production', role: 'Operator' }],
       leadInfoPrefill: {
-        companyName: 'WhaTap',
+        companyName: 'WhaTap Labs',
         industry: 'Software / SaaS',
         infrastructureSize: '201+',
       },
@@ -52,7 +52,7 @@ export const TEST_SCENARIOS: TestScenarioEntry[] = [
   },
   {
     label: 'Invited — Multiple Workspaces',
-    description: '초대 링크를 통해 여러 워크스페이스에 가입합니다. 인증 후 워크스페이스 선택 화면으로 이동합니다.',
+    description: 'Admin이 SRE Lead를 여러 워크스페이스에 초대합니다. 인증 후 워크스페이스 선택 화면으로 이동합니다.',
     badge: 'Multi',
     badgeColor: 'bg-amber-50 text-amber-700',
     flow: [
@@ -64,16 +64,16 @@ export const TEST_SCENARIOS: TestScenarioEntry[] = [
     ],
     scenario: {
       type: 'invited-multi',
-      email: 'alex.kim@whatap.io',
+      email: 'sre-lead@whatap.io',
       token: 'test-invite-multi',
-      inviterName: 'Jay Park',
+      inviterName: 'Test Admin (admin@whatap.io)',
       workspaces: [
-        { id: 'ws-1', name: 'WhaTap Production', role: 'SRE' },
-        { id: 'ws-2', name: 'WhaTap Staging', role: 'DevOps' },
-        { id: 'ws-3', name: 'WhaTap Development', role: 'Backend' },
+        { id: 'ws-1', name: 'OpsGent Production', role: 'SRE Lead' },
+        { id: 'ws-2', name: 'OpsGent Staging', role: 'SRE Lead' },
+        { id: 'ws-3', name: 'OpsGent Development', role: 'Developer' },
       ],
       leadInfoPrefill: {
-        companyName: 'WhaTap',
+        companyName: 'WhaTap Labs',
         industry: 'Software / SaaS',
         infrastructureSize: '201+',
       },

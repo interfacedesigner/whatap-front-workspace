@@ -1,10 +1,12 @@
 import type { Policy } from '@/entities/management';
 import { formatDate } from '@/entities/management';
-import { Column, DataTable } from '@/shared/components/data-table';
+import { Column, DataTable, TablePagination, useClientPagination } from '@/shared/components/data-table';
 import { Button } from '@/shared/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/shared/components/ui/card';
+import { Card, CardContent } from '@/shared/components/ui/card';
+import { ConfirmActionDialog } from '@/shared/components/ui/confirm-action-dialog';
 import { Link } from '@tanstack/react-router';
 import { ArrowRight, Plus, Trash2 } from 'lucide-react';
+import { useCallback, useState } from 'react';
 
 interface MemberPoliciesTableProps {
   policies: Policy[];
@@ -17,11 +19,11 @@ interface MemberPoliciesTableProps {
 function PoliciesTableWithRemove({
   policies,
   onPolicyClick,
-  onRemovePolicy,
+  onRequestRemove,
 }: {
   policies: Policy[];
   onPolicyClick?: (policy: Policy) => void;
-  onRemovePolicy: (policyId: string) => void;
+  onRequestRemove: (policyId: string) => void;
 }) {
   return (
     <DataTable
@@ -44,7 +46,7 @@ function PoliciesTableWithRemove({
             className='h-7 w-7 text-muted-foreground hover:text-destructive'
             onClick={(e) => {
               e.stopPropagation();
-              onRemovePolicy(row.id);
+              onRequestRemove(row.id);
             }}
           >
             <Trash2 className='h-3.5 w-3.5' />
@@ -83,41 +85,73 @@ export function MemberPoliciesTable({
   onAddPolicyClick,
   onRemovePolicy,
 }: MemberPoliciesTableProps) {
+  const [pendingRemovePolicyId, setPendingRemovePolicyId] = useState<string | null>(null);
+  const pagination = useClientPagination(policies);
+
+  const pendingPolicy = pendingRemovePolicyId ? policies.find((p) => p.id === pendingRemovePolicyId) : null;
+
+  const handleConfirmRemove = useCallback(() => {
+    if (pendingRemovePolicyId && onRemovePolicy) {
+      onRemovePolicy(pendingRemovePolicyId);
+    }
+    setPendingRemovePolicyId(null);
+  }, [pendingRemovePolicyId, onRemovePolicy]);
+
   return (
-    <Card>
-      <CardHeader className='flex-row items-center justify-between space-y-0'>
-        <CardTitle className='text-base'>Assigned Policies ({policies.length})</CardTitle>
-        <div className='flex items-center gap-2'>
-          {onAddPolicyClick && (
-            <Button variant='outline' size='sm' className='gap-1 text-xs' onClick={onAddPolicyClick}>
-              <Plus className='h-3.5 w-3.5' />
-              Add Policy
-            </Button>
-          )}
-          <Link to='/ws/$wsid/management/policies' params={{ wsid }}>
-            <Button variant='ghost' size='sm' className='gap-1 text-xs text-muted-foreground'>
-              Policy Management <ArrowRight className='h-3.5 w-3.5' />
-            </Button>
-          </Link>
-        </div>
-      </CardHeader>
-      <CardContent>
-        {policies.length === 0 ? (
-          <p className='py-6 text-center text-sm text-muted-foreground'>No policies assigned</p>
-        ) : (
-          <div className='max-h-[320px] rounded-lg border overflow-hidden'>
-            {onRemovePolicy != null ? (
-              <PoliciesTableWithRemove
-                policies={policies}
-                {...(onPolicyClick != null && { onPolicyClick })}
-                onRemovePolicy={onRemovePolicy}
-              />
-            ) : (
-              <PoliciesTableReadOnly policies={policies} {...(onPolicyClick != null && { onPolicyClick })} />
-            )}
+    <>
+      <Card>
+        <CardContent>
+          <div className='flex items-center justify-between mb-4'>
+            <h3 className='text-base font-medium'>Assigned Policies ({policies.length})</h3>
+            <div className='flex items-center gap-2'>
+              {onAddPolicyClick && (
+                <Button variant='outline' size='sm' className='gap-1 text-xs' onClick={onAddPolicyClick}>
+                  <Plus className='h-3.5 w-3.5' />
+                  Add Policy
+                </Button>
+              )}
+              <Link to='/ws/$wsid/management/policies' params={{ wsid }}>
+                <Button variant='ghost' size='sm' className='gap-1 text-xs text-muted-foreground'>
+                  Policy Management <ArrowRight className='h-3.5 w-3.5' />
+                </Button>
+              </Link>
+            </div>
           </div>
-        )}
-      </CardContent>
-    </Card>
+          {policies.length === 0 ? (
+            <p className='py-6 text-center text-sm text-muted-foreground'>No policies assigned</p>
+          ) : (
+            <div className='rounded-lg border overflow-hidden'>
+              {onRemovePolicy != null ? (
+                <PoliciesTableWithRemove
+                  policies={pagination.paginatedData}
+                  {...(onPolicyClick != null && { onPolicyClick })}
+                  onRequestRemove={setPendingRemovePolicyId}
+                />
+              ) : (
+                <PoliciesTableReadOnly
+                  policies={pagination.paginatedData}
+                  {...(onPolicyClick != null && { onPolicyClick })}
+                />
+              )}
+              {pagination.showPagination && <TablePagination {...pagination} />}
+            </div>
+          )}
+        </CardContent>
+      </Card>
+
+      <ConfirmActionDialog
+        open={pendingRemovePolicyId !== null}
+        onOpenChange={(open) => {
+          if (!open) {
+            setPendingRemovePolicyId(null);
+          }
+        }}
+        title='Remove Policy'
+        description={`Are you sure you want to remove "${pendingPolicy?.name ?? ''}" from this member? The member will lose all permissions granted by this policy.`}
+        confirmLabel='Remove'
+        variant='destructive'
+        onConfirm={handleConfirmRemove}
+      />
+    </>
   );
 }

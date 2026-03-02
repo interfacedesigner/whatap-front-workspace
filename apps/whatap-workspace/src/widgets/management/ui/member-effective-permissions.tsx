@@ -1,6 +1,6 @@
 import type { EffectivePermission, PermissionDomain } from '@/entities/management';
 import { Badge } from '@/shared/components/ui/badge';
-import { Card, CardContent, CardHeader, CardTitle } from '@/shared/components/ui/card';
+import { Card, CardContent } from '@/shared/components/ui/card';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/shared/components/ui/collapsible';
 import { ChevronRight, Shield } from 'lucide-react';
 import { useMemo, useState } from 'react';
@@ -49,56 +49,61 @@ export function MemberEffectivePermissions({ permissions }: MemberEffectivePermi
   return (
     <Card>
       <Collapsible open={isOpen} onOpenChange={setIsOpen}>
-        <CollapsibleTrigger asChild>
-          <CardHeader className='flex-row items-center gap-2 space-y-0 cursor-pointer hover:bg-muted/50 transition-colors'>
-            <ChevronRight
-              className={`h-4 w-4 text-muted-foreground transition-transform duration-200 ${isOpen ? 'rotate-90' : ''}`}
-            />
-            <Shield className='h-4 w-4 text-muted-foreground' />
-            <CardTitle className='text-base'>Effective Permissions ({permissions.length})</CardTitle>
-          </CardHeader>
-        </CollapsibleTrigger>
-        <CollapsibleContent>
-          <CardContent className='pt-0'>
-            {permissions.length === 0 ? (
-              <p className='py-6 text-center text-sm text-muted-foreground'>
-                No permissions. Assign policies with roles to grant permissions.
-              </p>
-            ) : (
-              <div className='space-y-4'>
-                {grouped.map(({ domain, permissions: perms }) => (
-                  <div key={domain}>
-                    <h4 className='mb-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground'>
-                      {domain}
-                    </h4>
-                    <div className='space-y-1.5'>
-                      {perms.map((perm, idx) => (
-                        <div
-                          key={`${perm.id}-${perm.sourceRoleName}-${perm.sourcePolicyName}-${idx}`}
-                          className='flex items-center justify-between rounded-md border px-3 py-2'
-                        >
-                          <div className='flex items-center gap-3'>
-                            <code className='text-xs font-mono text-foreground'>{perm.name}</code>
-                            <Badge variant='outline' className={ACTION_COLORS[perm.action] ?? ''}>
-                              {perm.action}
-                            </Badge>
-                            <Badge variant='secondary' className='text-[10px]'>
-                              {perm.scope === 'cross-workspace' ? 'Cross-WS' : 'Workspace'}
-                            </Badge>
+        <CardContent>
+          <CollapsibleTrigger asChild>
+            <button
+              type='button'
+              className='flex w-full items-center gap-2 cursor-pointer hover:opacity-70 transition-opacity'
+            >
+              <ChevronRight
+                className={`h-4 w-4 text-muted-foreground transition-transform duration-200 ${isOpen ? 'rotate-90' : ''}`}
+              />
+              <Shield className='h-4 w-4 text-muted-foreground' />
+              <h3 className='text-base font-medium'>Effective Permissions ({permissions.length})</h3>
+            </button>
+          </CollapsibleTrigger>
+          <CollapsibleContent>
+            <div className='mt-4'>
+              {permissions.length === 0 ? (
+                <p className='py-6 text-center text-sm text-muted-foreground'>
+                  No permissions. Assign policies with roles to grant permissions.
+                </p>
+              ) : (
+                <div className='space-y-4'>
+                  {grouped.map(({ domain, permissions: perms }) => (
+                    <div key={domain}>
+                      <h4 className='mb-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground'>
+                        {domain}
+                      </h4>
+                      <div className='space-y-1.5'>
+                        {perms.map((perm, idx) => (
+                          <div
+                            key={`${perm.id}-${perm.sourceRoleName}-${perm.sourcePolicyName}-${idx}`}
+                            className='flex items-center justify-between rounded-md border px-3 py-2'
+                          >
+                            <div className='flex items-center gap-3'>
+                              <code className='text-xs font-mono text-foreground'>{perm.name}</code>
+                              <Badge variant='outline' className={ACTION_COLORS[perm.action] ?? ''}>
+                                {perm.action}
+                              </Badge>
+                              <Badge variant='secondary' className='text-[10px]'>
+                                {perm.scope === 'cross-workspace' ? 'Cross-WS' : 'Workspace'}
+                              </Badge>
+                            </div>
+                            <span className='text-[11px] text-muted-foreground'>
+                              via <span className='font-medium'>{perm.sourceRoleName}</span> in{' '}
+                              <span className='font-medium'>{perm.sourcePolicyName}</span>
+                            </span>
                           </div>
-                          <span className='text-[11px] text-muted-foreground'>
-                            via <span className='font-medium'>{perm.sourceRoleName}</span> in{' '}
-                            <span className='font-medium'>{perm.sourcePolicyName}</span>
-                          </span>
-                        </div>
-                      ))}
+                        ))}
+                      </div>
                     </div>
-                  </div>
-                ))}
-              </div>
-            )}
-          </CardContent>
-        </CollapsibleContent>
+                  ))}
+                </div>
+              )}
+            </div>
+          </CollapsibleContent>
+        </CardContent>
       </Collapsible>
     </Card>
   );

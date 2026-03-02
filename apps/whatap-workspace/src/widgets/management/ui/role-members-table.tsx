@@ -1,10 +1,16 @@
 import type { Member } from '@/entities/management';
 import { MEMBER_STATUS_CONFIG, formatDate } from '@/entities/management';
-import { Column, DataTable, SelectRowColumn } from '@/shared/components/data-table';
+import {
+  Column,
+  DataTable,
+  SelectRowColumn,
+  TablePagination,
+  useClientPagination,
+} from '@/shared/components/data-table';
 import { Avatar, AvatarFallback } from '@/shared/components/ui/avatar';
 import { Badge } from '@/shared/components/ui/badge';
 import { Button } from '@/shared/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/shared/components/ui/card';
+import { Card, CardContent } from '@/shared/components/ui/card';
 import { Link } from '@tanstack/react-router';
 import { ArrowRight } from 'lucide-react';
 
@@ -15,23 +21,25 @@ interface RoleMembersTableProps {
 }
 
 export function RoleMembersTable({ members, wsid, onMemberClick }: RoleMembersTableProps) {
+  const pagination = useClientPagination(members);
+
   return (
     <Card>
-      <CardHeader className='flex-row items-center justify-between space-y-0'>
-        <CardTitle className='text-base'>Members ({members.length})</CardTitle>
-        <Link to='/ws/$wsid/management/members' params={{ wsid }}>
-          <Button variant='ghost' size='sm' className='gap-1 text-xs text-muted-foreground'>
-            Member Management <ArrowRight className='h-3.5 w-3.5' />
-          </Button>
-        </Link>
-      </CardHeader>
       <CardContent>
+        <div className='flex items-center justify-between mb-4'>
+          <h3 className='text-base font-medium'>Members ({members.length})</h3>
+          <Link to='/ws/$wsid/management/members' params={{ wsid }}>
+            <Button variant='ghost' size='sm' className='gap-1 text-xs text-muted-foreground'>
+              Member Management <ArrowRight className='h-3.5 w-3.5' />
+            </Button>
+          </Link>
+        </div>
         {members.length === 0 ? (
           <p className='py-6 text-center text-sm text-muted-foreground'>No members linked</p>
         ) : (
-          <div className='max-h-[320px] rounded-lg border overflow-hidden'>
+          <div className='rounded-lg border overflow-hidden'>
             <DataTable
-              data={members}
+              data={pagination.paginatedData}
               getRowId={(row) => row.id}
               {...(onMemberClick != null && { onRowClick: onMemberClick })}
               enableSorting
@@ -72,6 +80,7 @@ export function RoleMembersTable({ members, wsid, onMemberClick }: RoleMembersTa
                 render={(row) => formatDate(row.createdAt)}
               />
             </DataTable>
+            {pagination.showPagination && <TablePagination {...pagination} />}
           </div>
         )}
       </CardContent>

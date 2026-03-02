@@ -46,6 +46,7 @@ export function RolesTable({
           {...(onRowClick != null && { onRowClick })}
           enableSorting
           enableColumnResizing
+          scrollableBody
         >
           <SelectRowColumn<Role> pinned='left' />
           <Column<Role> header='Role Name' accessorKey='name' size={200} align='left' />

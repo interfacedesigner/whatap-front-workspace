@@ -46,6 +46,7 @@ export function MembersTable({
           {...(onRowClick != null && { onRowClick })}
           enableSorting
           enableColumnResizing
+          scrollableBody
         >
           <SelectRowColumn<Member> pinned='left' />
           <Column<Member>

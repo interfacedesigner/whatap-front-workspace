@@ -15,9 +15,11 @@ import {
   SidebarContent,
   SidebarFooter,
   SidebarGroup,
+  SidebarGroupLabel,
   SidebarHeader,
   SidebarInset,
   SidebarMenu,
+  SidebarMenuAction,
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarMenuSub,
@@ -33,39 +35,31 @@ import { OnboardingSidebarWidget } from '@/widgets/onboarding';
 import { Link, useMatchRoute, useNavigate, useParams } from '@tanstack/react-router';
 import { useAtomValue } from 'jotai';
 import {
+  AlertCircle,
   Bell,
   BookOpen,
+  Bot,
   BotMessageSquare,
   ChevronDown,
-  ChevronRight,
   ChevronsUpDown,
   FileText,
   Home,
+  LayoutDashboard,
   LogOut,
   type LucideIcon,
   Plus,
   Server,
   Settings,
   ShieldCheck,
-  SlidersHorizontal,
   User,
   Users,
+  Zap,
 } from 'lucide-react';
 import type { ReactNode } from 'react';
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useState } from 'react';
 
 interface WorkspaceLayoutProps {
   children: ReactNode;
-}
-
-interface NavGroup {
-  title: string;
-  items: {
-    label: string;
-    icon: LucideIcon;
-    href: string;
-    children?: { label: string; href: string }[];
-  }[];
 }
 
 export function WorkspaceLayout({ children }: WorkspaceLayoutProps) {
@@ -74,42 +68,7 @@ export function WorkspaceLayout({ children }: WorkspaceLayoutProps) {
   const workspaceSetup = useAtomValue(workspaceSetupAtom);
 
   const wsBase = `/ws/${wsid ?? ''}`;
-  const workspaceName = workspaceSetup.name || 'My Workspace';
-
-  const navGroups: NavGroup[] = useMemo(
-    () => [
-      {
-        title: 'Workspace',
-        items: [
-          {
-            label: 'Infrastructure',
-            icon: Server,
-            href: wsBase,
-            children: [{ label: 'Server Inventories', href: `${wsBase}/server/inventory-map` }],
-          },
-          {
-            label: 'Preferences',
-            icon: SlidersHorizontal,
-            href: `${wsBase}/preferences`,
-            children: [
-              { label: 'Events', href: `${wsBase}/events` },
-              { label: 'Incidents', href: `${wsBase}/incidents` },
-              { label: 'Agents', href: `${wsBase}/agents` },
-            ],
-          },
-        ],
-      },
-      {
-        title: 'Management',
-        items: [
-          { label: 'Members', icon: Users, href: `${wsBase}/management/members` },
-          { label: 'Roles', icon: FileText, href: `${wsBase}/management/roles` },
-          { label: 'Policies', icon: ShieldCheck, href: `${wsBase}/management/policies` },
-        ],
-      },
-    ],
-    [wsBase],
-  );
+  const workspaceName = 'Workspace';
 
   const isActive = useCallback(
     (href: string) => {
@@ -165,29 +124,45 @@ export function WorkspaceLayout({ children }: WorkspaceLayoutProps) {
         </SidebarHeader>
 
         <SidebarContent className='gap-0'>
-          {/* Overview - standalone item */}
-          <SidebarGroup className='py-1 px-3'>
+          {/* Workspace Name: hybrid link + collapsible */}
+          <SidebarGroup className='pt-1 pb-3 px-3'>
             <SidebarMenu>
-              <SidebarMenuItem>
-                <SidebarMenuButton
-                  asChild
-                  isActive={isOverviewActive}
-                  tooltip='Overview'
-                  className='hover:bg-blue-100/60 dark:hover:bg-blue-900/30'
-                >
-                  <Link to={wsBase}>
-                    <Home />
-                    <span>Overview</span>
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
+              <WorkspaceNavItem
+                workspaceName={workspaceName}
+                wsBase={wsBase}
+                isActive={isActive}
+                isOverviewActive={isOverviewActive}
+              />
             </SidebarMenu>
           </SidebarGroup>
 
-          {/* Nav Groups */}
-          {navGroups.map((group) => (
-            <NavGroupSection key={group.title} group={group} isActive={isActive} />
-          ))}
+          {/* Operations: Events, Incidents, Agents */}
+          <SidebarGroup className='py-1 px-3'>
+            <SidebarMenu>
+              <FlatNavItem icon={Zap} label='Events' href={`${wsBase}/events`} isActive={isActive} />
+              <FlatNavItem icon={AlertCircle} label='Incidents' href={`${wsBase}/incidents`} isActive={isActive} />
+              <FlatNavItem icon={Bot} label='Agents' href={`${wsBase}/agents`} isActive={isActive} />
+            </SidebarMenu>
+          </SidebarGroup>
+
+          <SidebarSeparator className='bg-zinc-200 dark:bg-zinc-700 mx-3 my-2' />
+
+          {/* Management: Members, Roles, Policies */}
+          <SidebarGroup className='pt-1 pb-1 px-3'>
+            <SidebarGroupLabel className='text-[11px] uppercase tracking-wider text-zinc-400 dark:text-zinc-500 h-7 px-2'>
+              Management
+            </SidebarGroupLabel>
+            <SidebarMenu>
+              <FlatNavItem icon={Users} label='Members' href={`${wsBase}/management/members`} isActive={isActive} />
+              <FlatNavItem icon={FileText} label='Roles' href={`${wsBase}/management/roles`} isActive={isActive} />
+              <FlatNavItem
+                icon={ShieldCheck}
+                label='Policies'
+                href={`${wsBase}/management/policies`}
+                isActive={isActive}
+              />
+            </SidebarMenu>
+          </SidebarGroup>
         </SidebarContent>
 
         {/* Footer */}
@@ -258,89 +233,120 @@ export function WorkspaceLayout({ children }: WorkspaceLayoutProps) {
   );
 }
 
-/** Static Nav Group — title always visible, no collapsible toggle */
-function NavGroupSection({ group, isActive }: { group: NavGroup; isActive: (href: string) => boolean }) {
+/** Workspace Name — hybrid link (→ Overview) + collapsible (→ Infrastructure) */
+function WorkspaceNavItem({
+  workspaceName,
+  wsBase,
+  isActive,
+  isOverviewActive,
+}: {
+  workspaceName: string;
+  wsBase: string;
+  isActive: (href: string) => boolean;
+  isOverviewActive: boolean;
+}) {
+  const [isWsOpen, setIsWsOpen] = useState(true);
+  const [isInfraOpen, setIsInfraOpen] = useState(true);
+
   return (
-    <SidebarGroup className='py-1 px-3'>
-      {/* Static title (hidden in icon-only mode) */}
-      <div className='flex w-full items-center py-2 group-data-[collapsible=icon]:hidden'>
-        <span className='text-sm font-semibold text-zinc-500 dark:text-zinc-400'>{group.title}</span>
-      </div>
+    <Collapsible open={isWsOpen} onOpenChange={setIsWsOpen} asChild>
+      <SidebarMenuItem>
+        <SidebarMenuButton
+          tooltip={workspaceName}
+          className='hover:bg-blue-100/60 dark:hover:bg-blue-900/30'
+          onClick={() => setIsWsOpen((prev) => !prev)}
+        >
+          <Home />
+          <span>{workspaceName}</span>
+        </SidebarMenuButton>
 
-      <SidebarMenu>
-        {group.items.map((item) => {
-          if (item.children && item.children.length > 0) {
-            return <CollapsibleNavItem key={item.label} item={item} isActive={isActive} />;
-          }
+        {/* ChevronDown click → toggle collapsible (separate click target) */}
+        <CollapsibleTrigger asChild>
+          <SidebarMenuAction className='hover:bg-blue-100/60 dark:hover:bg-blue-900/30 rounded-md'>
+            <ChevronDown className={`transition-transform duration-200 ${isWsOpen ? '' : '-rotate-90'}`} />
+            <span className='sr-only'>Toggle workspace menu</span>
+          </SidebarMenuAction>
+        </CollapsibleTrigger>
 
-          return (
-            <SidebarMenuItem key={item.label}>
-              <SidebarMenuButton
+        {/* Collapsible content: Overview + Infrastructure */}
+        <CollapsibleContent>
+          <SidebarMenuSub className='mr-0 pr-0'>
+            {/* Overview */}
+            <SidebarMenuSubItem>
+              <SidebarMenuSubButton
                 asChild
-                isActive={isActive(item.href)}
-                tooltip={item.label}
+                isActive={isOverviewActive}
                 className='hover:bg-blue-100/60 dark:hover:bg-blue-900/30'
               >
-                <Link to={item.href}>
-                  <item.icon />
-                  <span>{item.label}</span>
+                <Link to={wsBase}>
+                  <LayoutDashboard className='size-4' />
+                  <span>Overview</span>
                 </Link>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-          );
-        })}
-      </SidebarMenu>
-    </SidebarGroup>
-  );
-}
+              </SidebarMenuSubButton>
+            </SidebarMenuSubItem>
 
-/** Collapsible Nav Item with sub-menu */
-function CollapsibleNavItem({
-  item,
-  isActive,
-}: {
-  item: {
-    label: string;
-    icon: LucideIcon;
-    href: string;
-    children?: { label: string; href: string }[];
-  };
-  isActive: (href: string) => boolean;
-}) {
-  const [isOpen, setIsOpen] = useState(false);
-  const Icon = item.icon;
-
-  return (
-    <Collapsible open={isOpen} onOpenChange={setIsOpen} asChild>
-      <SidebarMenuItem>
-        <CollapsibleTrigger asChild>
-          <SidebarMenuButton
-            isActive={isActive(item.href)}
-            tooltip={item.label}
-            className='hover:bg-blue-100/60 dark:hover:bg-blue-900/30'
-          >
-            <Icon />
-            <span>{item.label}</span>
-            <ChevronRight
-              className={`ml-auto size-4 text-zinc-400 transition-transform duration-200 ${isOpen ? 'rotate-90' : ''}`}
-            />
-          </SidebarMenuButton>
-        </CollapsibleTrigger>
-        <CollapsibleContent>
-          <SidebarMenuSub>
-            {item.children?.map((child) => (
-              <SidebarMenuSubItem key={child.label}>
-                <SidebarMenuSubButton asChild isActive={isActive(child.href)}>
-                  <Link to={child.href}>
-                    <span>{child.label}</span>
-                  </Link>
-                </SidebarMenuSubButton>
-              </SidebarMenuSubItem>
-            ))}
+            {/* Infrastructure */}
+            <Collapsible open={isInfraOpen} onOpenChange={setIsInfraOpen} asChild>
+              <SidebarMenuItem>
+                <SidebarMenuButton
+                  className='hover:bg-blue-100/60 dark:hover:bg-blue-900/30 text-sm'
+                  tooltip='Infrastructure'
+                >
+                  <Server className='size-4' />
+                  <span>Infrastructure</span>
+                </SidebarMenuButton>
+                <CollapsibleTrigger asChild>
+                  <SidebarMenuAction className='hover:bg-blue-100/60 dark:hover:bg-blue-900/30 rounded-md'>
+                    <ChevronDown className={`transition-transform duration-200 ${isInfraOpen ? '' : '-rotate-90'}`} />
+                    <span className='sr-only'>Toggle infrastructure menu</span>
+                  </SidebarMenuAction>
+                </CollapsibleTrigger>
+                <CollapsibleContent>
+                  <SidebarMenuSub>
+                    <SidebarMenuSubItem>
+                      <SidebarMenuSubButton asChild isActive={isActive(`${wsBase}/server/inventory-map`)}>
+                        <Link to={`${wsBase}/server/inventory-map`}>
+                          <span>Server Inventory Map</span>
+                        </Link>
+                      </SidebarMenuSubButton>
+                    </SidebarMenuSubItem>
+                  </SidebarMenuSub>
+                </CollapsibleContent>
+              </SidebarMenuItem>
+            </Collapsible>
           </SidebarMenuSub>
         </CollapsibleContent>
       </SidebarMenuItem>
     </Collapsible>
+  );
+}
+
+/** Simple flat navigation item */
+function FlatNavItem({
+  icon: Icon,
+  label,
+  href,
+  isActive,
+}: {
+  icon: LucideIcon;
+  label: string;
+  href: string;
+  isActive: (href: string) => boolean;
+}) {
+  return (
+    <SidebarMenuItem>
+      <SidebarMenuButton
+        asChild
+        isActive={isActive(href)}
+        tooltip={label}
+        className='hover:bg-blue-100/60 dark:hover:bg-blue-900/30'
+      >
+        <Link to={href}>
+          <Icon />
+          <span>{label}</span>
+        </Link>
+      </SidebarMenuButton>
+    </SidebarMenuItem>
   );
 }
 
