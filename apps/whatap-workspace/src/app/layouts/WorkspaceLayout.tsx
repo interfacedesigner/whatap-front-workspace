@@ -1,6 +1,7 @@
 import { useAuth } from '@/features/auth';
 import { workspaceSetupAtom } from '@/features/onboarding';
 import { Avatar, AvatarFallback } from '@/shared/components/ui/avatar';
+import { Button } from '@/shared/components/ui/button';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/shared/components/ui/collapsible';
 import {
   DropdownMenu,
@@ -27,10 +28,14 @@ import {
   SidebarSeparator,
   SidebarTrigger,
 } from '@/shared/components/ui/sidebar';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/shared/components/ui/tooltip';
 import { OnboardingSidebarWidget } from '@/widgets/onboarding';
 import { Link, useMatchRoute, useNavigate, useParams } from '@tanstack/react-router';
 import { useAtomValue } from 'jotai';
 import {
+  Bell,
+  BookOpen,
+  BotMessageSquare,
   ChevronDown,
   ChevronRight,
   ChevronsUpDown,
@@ -210,6 +215,40 @@ export function WorkspaceLayout({ children }: WorkspaceLayoutProps) {
         <header className='flex h-14 items-center gap-2 bg-white dark:bg-slate-950 px-4'>
           <SidebarTrigger />
           <div className='flex-1' />
+          <div className='flex items-center gap-1'>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button variant='ghost' size='icon' className='h-8 w-8 text-muted-foreground hover:text-foreground'>
+                  <BookOpen className='h-4 w-4' />
+                  <span className='sr-only'>Docs</span>
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>Docs</TooltipContent>
+            </Tooltip>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button variant='ghost' size='icon' className='h-8 w-8 text-muted-foreground hover:text-foreground'>
+                  <BotMessageSquare className='h-4 w-4' />
+                  <span className='sr-only'>AI Assistant</span>
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>AI Assistant</TooltipContent>
+            </Tooltip>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant='ghost'
+                  size='icon'
+                  className='h-8 w-8 text-muted-foreground hover:text-foreground relative'
+                >
+                  <Bell className='h-4 w-4' />
+                  <span className='sr-only'>Notifications</span>
+                  <span className='absolute top-1 right-1 h-2 w-2 rounded-full bg-destructive' />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>Notifications</TooltipContent>
+            </Tooltip>
+          </div>
         </header>
 
         {/* Main Content */}
