@@ -11,11 +11,14 @@ export interface LoginResponse {
   workspaceId?: string;
 }
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || '/api';
+const API_BASE_URL = import.meta.env.VITE_API_URL || '';
+
+/** API 서버가 설정되지 않으면 Mock 모드 (로컬 개발 + Vercel 데모) */
+const USE_MOCK = !API_BASE_URL;
 
 export async function loginApi(credentials: LoginCredentials): Promise<LoginResponse> {
-  // Development mock (when API is not available)
-  if (import.meta.env.DEV) {
+  // Mock 모드: API 서버 없이 동작 (DEV + Vercel 데모)
+  if (USE_MOCK) {
     await new Promise((resolve) => setTimeout(resolve, 800));
 
     if (credentials.email && credentials.password) {
@@ -45,7 +48,7 @@ export async function loginApi(credentials: LoginCredentials): Promise<LoginResp
         };
       }
 
-      // ③ 기타 이메일: 기존 사용자로 처리 (dev 편의)
+      // ③ 기타 이메일: 기존 사용자로 처리 (데모 편의)
       return {
         user: {
           id: 'dev-user-123',
@@ -56,6 +59,8 @@ export async function loginApi(credentials: LoginCredentials): Promise<LoginResp
         workspaceId: 'ws-default-001',
       };
     }
+
+    throw new Error('Login failed');
   }
 
   const response = await fetch(`${API_BASE_URL}/auth/login`, {

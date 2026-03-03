@@ -1,7 +1,7 @@
 /**
  * Onboarding API
- * @description 온보딩 API 래퍼. DEV 모드에서는 Mock API를 호출하고,
- * Production에서는 실제 API를 호출합니다.
+ * @description 온보딩 API 래퍼. API 서버가 없으면 Mock API를 호출하고,
+ * API 서버가 설정되면 실제 API를 호출합니다.
  */
 import type {
   ActionBookData,
@@ -28,6 +28,9 @@ import {
   resetAgentPolling,
 } from './onboarding.mock';
 
+/** API 서버가 설정되지 않으면 Mock 모드 (로컬 개발 + Vercel 데모) */
+const USE_MOCK = !import.meta.env.VITE_API_URL;
+
 // =============================================================================
 // Step 1: Workspace
 // =============================================================================
@@ -37,8 +40,7 @@ export async function createWorkspaceApi(params: {
   region: RegionOption;
   preset: WorkspacePreset;
 }): Promise<CreateWorkspaceResponse> {
-  // DEV 환경에서는 Mock 사용
-  if (import.meta.env.DEV) {
+  if (USE_MOCK) {
     return mockCreateWorkspace(params);
   }
 
@@ -51,7 +53,7 @@ export async function createWorkspaceApi(params: {
 // =============================================================================
 
 export async function pollAgentStatusApi(): Promise<AgentPollingResponse> {
-  if (import.meta.env.DEV) {
+  if (USE_MOCK) {
     return mockPollAgentStatus();
   }
   throw new Error('Production API not implemented');
@@ -70,7 +72,7 @@ export function getInstallScript(params: { accessKey: string; region: RegionOpti
 // =============================================================================
 
 export async function inviteMembersApi(members: InvitedMember[]): Promise<InviteMembersResponse> {
-  if (import.meta.env.DEV) {
+  if (USE_MOCK) {
     return mockInviteMembers(members);
   }
   throw new Error('Production API not implemented');
@@ -81,7 +83,7 @@ export async function inviteMembersApi(members: InvitedMember[]): Promise<Invite
 // =============================================================================
 
 export async function saveMonitoringRulesApi(data: MonitoringRulesData): Promise<SaveMonitoringRulesResponse> {
-  if (import.meta.env.DEV) {
+  if (USE_MOCK) {
     return mockSaveMonitoringRules(data);
   }
   throw new Error('Production API not implemented');
@@ -92,7 +94,7 @@ export async function saveMonitoringRulesApi(data: MonitoringRulesData): Promise
 // =============================================================================
 
 export async function saveActionBookApi(data: ActionBookData): Promise<SaveActionBookResponse> {
-  if (import.meta.env.DEV) {
+  if (USE_MOCK) {
     return mockSaveActionBook(data);
   }
   throw new Error('Production API not implemented');
@@ -102,7 +104,7 @@ export async function testLlmConnectionApi(params: {
   provider: string;
   apiKey: string;
 }): Promise<{ success: boolean; message: string }> {
-  if (import.meta.env.DEV) {
+  if (USE_MOCK) {
     return mockTestLlmConnection(params);
   }
   throw new Error('Production API not implemented');
@@ -113,7 +115,7 @@ export async function testLlmConnectionApi(params: {
 // =============================================================================
 
 export async function completeOnboardingApi(workspaceId: string): Promise<CompleteOnboardingResponse> {
-  if (import.meta.env.DEV) {
+  if (USE_MOCK) {
     return mockCompleteOnboarding(workspaceId);
   }
   throw new Error('Production API not implemented');
