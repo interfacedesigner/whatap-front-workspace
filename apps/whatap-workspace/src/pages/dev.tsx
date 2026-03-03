@@ -74,7 +74,7 @@ function FlowCard({ title, description, icon, href, status, frames }: FlowCardPr
   );
 
   if (isClickable) {
-    return <Link to={href as '/signup/dev' | '/login' | '/reset-password'}>{content}</Link>;
+    return <Link to={href as '/readme' | '/login' | '/reset-password'}>{content}</Link>;
   }
 
   return content;
@@ -86,7 +86,7 @@ function DevHubPage() {
       title: 'Sign up',
       description: '신규 가입 플로우. 일반 가입, 초대 가입(단일/다중 워크스페이스) 시나리오 테스트',
       icon: <UserPlus className='w-5 h-5' />,
-      href: '/signup/dev',
+      href: '/readme',
       status: 'ready',
       frames: ['/signup-default', '/signup-invited', '/signup/lead-Info-*', '/signup/verify-*', '/signup-success/*'],
     },
